@@ -13,8 +13,28 @@ storage.radiation_items = {
 }
 
 storage.entities = {
-
+    "assembling-machine",
+    "furnace", 
+    "chemical-plant",
+    "centrifuge",
+    "container",
+    "logistic-container",
+    "car",
+    "cargo-wagon",
+    "reactor",
+    "rocket-silo",
+    "lab",
+    "inserter"
 }
+
+storage.belt_entities = {
+    "transport-belt",
+    "underground-belt",
+    "splitter"
+}
+
+script.on_init(initialise_new_game)
+
 
 -- Settings Variables
 local mod_name = "Stukez12-Radiation-"
@@ -27,15 +47,9 @@ function player_radiation_damage(event)
 
         local damage = 0
 
-        game.print("Radiation Damage Begin")
-
         damage = player_inventory_damage(player)
-        game.print("Inventory Damage Calculated: " .. tostring(damage))
         damage = damage + ore_patch_damage(player)
-
-        game.print("+ Ore Damage Calculated: " .. tostring(damage))
-
-        game.print("    ")
+        damage = damage + belt_damage(player)
 
         ::continue::
     end
@@ -88,6 +102,35 @@ function ore_patch_damage(player)
         end
 
         ::continue::
+    end
+
+    return damage
+end
+
+
+function belt_damage(player)
+    local belt_entities = area_fetch_entities(player, storage.belt_entities)
+    local damage = 0
+
+    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+    
+    for _, belt in pairs(belt_entities) do
+        for i = 1, belt.get_max_transport_line_index() do
+            local line = belt.get_transport_line(i)
+            local contents = line.get_contents()
+
+            for _, item in pairs(contents) do
+                local value = storage.radiation_items[item.name]
+
+                if value then
+                    local distance = math.sqrt((belt.position.x - player.position.x)^2 + (belt.position.y - player.position.y)^2)
+
+                    if distance <= R_RADIUS then
+                        damage = damage + (value * (1 - (distance / R_RADIUS)) * item.count * 0.5)
+                    end
+                end
+            end
+        end
     end
 
     return damage
