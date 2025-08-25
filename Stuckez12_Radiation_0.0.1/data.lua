@@ -1,17 +1,17 @@
 local sounds = {
     {
         name = "LowRadiation",
-        dir = "__Stukez12_Radiation__/sounds/low_radiation/low-radiation-",
+        dir = "__Stuckez12_Radiation__/sounds/low_radiation/low-radiation-",
         count = 7
     },
     {
         name = "MediumRadiation",
-        dir = "__Stukez12_Radiation__/sounds/medium_radiation/medium-radiation-",
+        dir = "__Stuckez12_Radiation__/sounds/medium_radiation/medium-radiation-",
         count = 7
     },
     {
         name = "HighRadiation",
-        dir = "__Stukez12_Radiation__/sounds/high_radiation/high-radiation-",
+        dir = "__Stuckez12_Radiation__/sounds/high_radiation/high-radiation-",
         count = 7
     }
 }

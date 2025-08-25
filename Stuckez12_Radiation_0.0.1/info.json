@@ -1,8 +1,8 @@
 {
-    "name": "Stukez12_Radiation",
+    "name": "Stuckez12_Radiation",
     "version": "0.0.1",
-    "title": "Stukez12 Radiation",
+    "title": "Stuckez12 Radiation",
     "description": "A simple world environment addon that includes radiation as a new hazard. Inspired by TibsRadiationMod",
-    "author": "Stukez12",
+    "author": "Stuckez12",
     "factorio_version": "2.0"
 }

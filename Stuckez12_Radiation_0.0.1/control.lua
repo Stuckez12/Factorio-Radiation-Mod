@@ -37,7 +37,7 @@ script.on_init(initialise_new_game)
 
 
 -- Settings Variables
-local mod_name = "Stukez12-Radiation-"
+local mod_name = "Stuckez12-Radiation-"
 local playing_sound = false
 
 

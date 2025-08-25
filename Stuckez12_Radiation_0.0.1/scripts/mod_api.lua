@@ -1,4 +1,4 @@
-local remote_error = "Stukez12-Radiation Mod API Error:\n"
+local remote_error = "Stuckez12-Radiation Mod API Error:\n"
 
 local function add_radioactive_item(item, value)
     -- item validation
@@ -20,15 +20,15 @@ local function add_radioactive_item(item, value)
     end
 
     storage.Radioactive_Items[item] = value
-    log("Stukez12-Radiation Mod API >>> Item: " .. item .. " added to radiation list with value: " .. tostring(value))
+    log("Stuckez12-Radiation Mod API >>> Item: " .. item .. " added to radiation list with value: " .. tostring(value))
 end
 
 local function remove_radioactive_item(item)
     storage.Radioactive_Items[item] = nil
-    log("Stukez12-Radiation Mod API >>> Item: " .. item .. " removed from radiation list")
+    log("Stuckez12-Radiation Mod API >>> Item: " .. item .. " removed from radiation list")
 end
 
-remote.add_interface("Stukez12_Radiation", {
+remote.add_interface("Stuckez12_Radiation", {
     add_radioactive_item = add_radioactive_item,
     remove_radioactive_item = remove_radioactive_item
 })

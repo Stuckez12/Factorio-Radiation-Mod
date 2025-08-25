@@ -1,4 +1,4 @@
-local mod_name = "Stukez12-Radiation-"
+local mod_name = "Stuckez12-Radiation-"
 
 data:extend({
   {
