@@ -38,6 +38,7 @@ script.on_init(initialise_new_game)
 
 -- Settings Variables
 local mod_name = "Stukez12-Radiation-"
+local playing_sound = false
 
 
 -- Mod Functions
@@ -45,14 +46,36 @@ function player_radiation_damage(event)
     for _, player in pairs(game.connected_players) do
         if not (player.character and player.valid and player.surface) then goto continue end
 
-        local damage = 0
-
-        damage = player_inventory_damage(player)
+        local damage = player_inventory_damage(player)
         damage = damage + ore_patch_damage(player)
         damage = damage + belt_damage(player)
 
+        if damage == 0 then goto continue end
+
+        playing_sound = not playing_sound
+
+        if playing_sound then goto continue end
+        
+        if damage <= 5 then
+            play_sound("LowRadiation", 0.6)
+        elseif damage <= 25 then
+            play_sound("MediumRadiation", 0.8)
+        else
+            play_sound("HighRadiation", 1)
+        end
+
+        player.character.damage(damage, "neutral", "poison")
+
         ::continue::
     end
+end
+
+
+function play_sound(sound_name, volume)
+    game.play_sound{
+        path = sound_name,
+        volume_modifier = volume
+    }
 end
 
 
