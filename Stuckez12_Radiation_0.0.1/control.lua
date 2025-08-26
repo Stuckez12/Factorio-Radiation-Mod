@@ -1,3 +1,5 @@
+require("scripts.mod_api")
+
 -- Global Variables
 storage.radiation_items = {
     ["uranium-ore"] = 1,
@@ -12,20 +14,20 @@ storage.radiation_items = {
     ["atomic-bomb"] = 50
 }
 
-storage.entities = {
-    "assembling-machine",
-    "furnace", 
-    "chemical-plant",
-    "centrifuge",
-    "container",
-    "logistic-container",
-    "car",
-    "cargo-wagon",
-    "reactor",
-    "rocket-silo",
-    "lab",
-    "inserter"
-}
+-- storage.entities = {
+--     "assembling-machine",
+--     "furnace", 
+--     "chemical-plant",
+--     "centrifuge",
+--     "container",
+--     "logistic-container",
+--     "car",
+--     "cargo-wagon",
+--     "reactor",
+--     "rocket-silo",
+--     "lab",
+--     "inserter"
+-- }
 
 storage.belt_entities = {
     "transport-belt",
@@ -33,41 +35,80 @@ storage.belt_entities = {
     "splitter"
 }
 
-script.on_init(initialise_new_game)
-
 
 -- Settings Variables
 local mod_name = "Stuckez12-Radiation-"
-local playing_sound = false
+local playing_sound = 0
 
 
 -- Mod Functions
 function player_radiation_damage(event)
+    local damage = 0
+
     for _, player in pairs(game.connected_players) do
         if not (player.character and player.valid and player.surface) then goto continue end
 
-        local damage = player_inventory_damage(player)
+        damage = player_inventory_damage(player)
         damage = damage + ore_patch_damage(player)
         damage = damage + belt_damage(player)
 
         if damage == 0 then goto continue end
 
-        playing_sound = not playing_sound
+        playing_sound = playing_sound + 1
 
-        if playing_sound then goto continue end
-        
-        if damage <= 5 then
-            play_sound("LowRadiation", 0.6)
-        elseif damage <= 25 then
-            play_sound("MediumRadiation", 0.8)
-        else
-            play_sound("HighRadiation", 1)
+        if playing_sound == 1 then
+            if damage <= 50 then
+                play_sound("LowRadiation", 0.2)
+            elseif damage <= 250 then
+                play_sound("MediumRadiation", 0.4)
+            else
+                play_sound("HighRadiation", 0.6)
+            end
         end
+
+        ::sound_end::
+
+        damage = damage_resistances(player, damage)
 
         player.character.damage(damage, "neutral", "poison")
 
         ::continue::
+
+        if playing_sound >= 2 then playing_sound = 0 end
     end
+end
+
+
+function damage_resistances(player, damage)
+    local armor = player.get_inventory(defines.inventory.character_armor)[1]
+
+    if not armor or not armor.valid_for_read then return damage end
+
+    local grid = armor.grid
+
+    if not grid then return damage end
+
+    local contents = grid.get_contents()
+
+    -- Reduce then absorb radiation damage
+    local absorber_count = 0
+    local reducer_count = 0
+
+    for _, entry in ipairs(contents) do
+        if entry.name == "radiation-absorption-equipment" then
+            absorber_count = entry.count
+        end
+
+        if entry.name == "radiation-reduction-equipment" then
+            reducer_count = entry.count
+        end
+    end
+
+    for i = 1, reducer_count do damage = math.max(0, damage * 0.95) end
+
+    damage = math.max(0, damage - (absorber_count * 10))
+
+    return damage / 10
 end
 
 
@@ -160,4 +201,4 @@ function belt_damage(player)
 end
 
 
-script.on_nth_tick(60, player_radiation_damage)
+script.on_nth_tick(30, player_radiation_damage)

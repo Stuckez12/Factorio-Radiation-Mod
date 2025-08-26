@@ -1,3 +1,6 @@
+require("prototypes.include_equipment")
+
+
 local sounds = {
     {
         name = "LowRadiation",
