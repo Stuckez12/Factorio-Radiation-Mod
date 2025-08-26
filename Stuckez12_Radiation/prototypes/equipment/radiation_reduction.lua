@@ -25,10 +25,25 @@ data:extend({
         },
         energy_source = {
             type = "electric",
-            buffer_capacity = "1MJ",
-            input_flow_limit = "500kW",
+            buffer_capacity = "1kJ",
+            input_flow_limit = "1kW",
             usage_priority = "primary-input"
         },
         categories = {"armor"}
+    },
+    {
+        type = "recipe",
+        name = "radiation-reduction-recipe",
+        enabled = false,
+        energy_required = 5,
+        ingredients = {
+            {type = "item", name = "battery", amount = 2},
+            {type = "item", name = "steel-plate", amount = 60},
+            {type = "item", name = "iron-plate", amount = 80},
+            {type = "item", name = "copper-plate", amount = 40},
+        },
+        results = {
+            { type = "item", name = "radiation-reduction-equipment", amount = 1 }
+        }
     }
 })
