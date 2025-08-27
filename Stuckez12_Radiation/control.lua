@@ -218,12 +218,35 @@ function prevent_spawn_death(player, damage)
 end
 
 
+function building_damage(player)
+    local building_entities = area_fetch_entities(player, {"assembling-machine", "rocket-silo", "furnace"})
+    local damage = 0
+
+    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+
+    for _, building in pairs(building_entities) do
+        local inv_in = building.get_inventory(defines.inventory.crafter_input)
+        local inv_out = building.get_inventory(defines.inventory.crafter_output)
+
+        local distance = math.sqrt((building.position.x - player.position.x)^2 + (building.position.y - player.position.y)^2)
+
+        for item, value in pairs(storage.radiation_items) do
+            damage = damage + math.max(inv_in.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
+            damage = damage + math.max(inv_out.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
+        end
+    end
+
+    return damage
+end
+
+
 local damage_functions = {
     player_inventory_damage,
     ore_patch_damage,
     belt_damage,
     container_damage,
-    corpse_damage
+    corpse_damage,
+    building_damage
 }
 
 

@@ -7,7 +7,3 @@ Inspired by TibsRadiationMod
 # Planned Additions
 - Better item icons
 - Tiers of both equipment types (include quality?)
-- Damage from radioactive materials within
-- - Assembly Machines
-- - Centrifuges
-- - All other building types

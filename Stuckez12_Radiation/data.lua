@@ -34,10 +34,13 @@ for _, sound in pairs(sounds) do
             type = "sound",
             name = sound.name,
             variations = variations
-        },
-        {
-            type = "damage-type",
-            name = "radiation"
         }
     })
 end
+
+data:extend({
+    {
+        type = "damage-type",
+        name = "radiation"
+    }
+})
