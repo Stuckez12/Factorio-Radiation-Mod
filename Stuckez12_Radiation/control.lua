@@ -238,12 +238,18 @@ function player_radiation_damage(event)
 
         playing_sound = playing_sound + 1
 
+        -- Prevent immediate spawn kill by radiation
+        -- by dedicating the world center as radiation free
+        damage = prevent_spawn_death(player, damage)
+
+        if damage == 0 then goto sound_end end
+
         if playing_sound == 1 then
-            if damage <= 50 then
+            if damage <= 50 and damage ~= 0 then
                 play_sound("LowRadiation", 0.2)
             elseif damage <= 250 then
                 play_sound("MediumRadiation", 0.4)
-            else
+            elseif damage > 250 then
                 play_sound("HighRadiation", 0.6)
             end
         end
@@ -252,10 +258,6 @@ function player_radiation_damage(event)
 
         -- Equipment resistances
         damage = damage_resistances(player, damage)
-
-        -- Prevent immediate spawn kill by radiation
-        -- by dedicating the world center as radiation free
-        damage = prevent_spawn_death(player, damage)
 
         player.character.damage(damage, game.forces.enemy, "radiation")
 
