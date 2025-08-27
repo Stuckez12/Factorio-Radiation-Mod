@@ -9,6 +9,5 @@ Inspired by TibsRadiationMod
 - Tiers of both equipment types (include quality?)
 - Damage from radioactive materials within
 - - Assembly Machines
-- - Containers
 - - Centrifuges
 - - All other building types

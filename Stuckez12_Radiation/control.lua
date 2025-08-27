@@ -19,7 +19,6 @@ storage.radiation_items = {
 --     "furnace", 
 --     "chemical-plant",
 --     "centrifuge",
---     "container",
 --     "logistic-container",
 --     "car",
 --     "cargo-wagon",
@@ -36,49 +35,14 @@ storage.belt_entities = {
 }
 
 
+
+
 -- Settings Variables
 local mod_name = "Stuckez12-Radiation-"
 local playing_sound = 0
 
 
 -- Mod Functions
-function player_radiation_damage(event)
-    local damage = 0
-
-    for _, player in pairs(game.connected_players) do
-        if not (player.character and player.valid and player.surface) then goto continue end
-
-        damage = player_inventory_damage(player)
-        damage = damage + ore_patch_damage(player)
-        damage = damage + belt_damage(player)
-
-        if damage == 0 then goto continue end
-
-        playing_sound = playing_sound + 1
-
-        if playing_sound == 1 then
-            if damage <= 50 then
-                play_sound("LowRadiation", 0.2)
-            elseif damage <= 250 then
-                play_sound("MediumRadiation", 0.4)
-            else
-                play_sound("HighRadiation", 0.6)
-            end
-        end
-
-        ::sound_end::
-
-        damage = damage_resistances(player, damage)
-
-        player.character.damage(damage, "neutral", "poison")
-
-        ::continue::
-
-        if playing_sound >= 2 then playing_sound = 0 end
-    end
-end
-
-
 function damage_resistances(player, damage)
     local armor = player.get_inventory(defines.inventory.character_armor)[1]
 
@@ -190,7 +154,7 @@ function belt_damage(player)
                     local distance = math.sqrt((belt.position.x - player.position.x)^2 + (belt.position.y - player.position.y)^2)
 
                     if distance <= R_RADIUS then
-                        damage = damage + (value * (1 - (distance / R_RADIUS)) * item.count * 0.5)
+                        damage = damage + math.max(value * (1 - (distance / R_RADIUS)) * item.count, 0)
                     end
                 end
             end
@@ -198,6 +162,107 @@ function belt_damage(player)
     end
 
     return damage
+end
+
+
+function container_damage(player)
+    local container_entities = area_fetch_entities(player, {"container"})
+    local damage = 0
+
+    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+
+    for _, container in pairs(container_entities) do
+        local inv = container.get_inventory(defines.inventory.chest)
+
+        local distance = math.sqrt((container.position.x - player.position.x)^2 + (container.position.y - player.position.y)^2)
+
+        for item, value in pairs(storage.radiation_items) do
+            local amount = inv.get_item_count(item)
+            damage = damage + math.max(amount * value * (1 - (distance / R_RADIUS)), 0)
+        end
+    end
+
+    return damage
+end
+
+
+function corpse_damage(player)
+    local corpse_entities = area_fetch_entities(player, {"character-corpse"})
+    local damage = 0
+
+    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+
+    for _, corpse in pairs(corpse_entities) do
+        local inv = corpse.get_inventory(defines.inventory.chest)
+
+        local distance = math.sqrt((corpse.position.x - player.position.x)^2 + (corpse.position.y - player.position.y)^2)
+
+        for item, value in pairs(storage.radiation_items) do
+            local amount = inv.get_item_count(item)
+            damage = damage + math.max(amount * value * (1 - (distance / R_RADIUS)), 0)
+        end
+    end
+
+    return damage
+end
+
+
+function prevent_spawn_death(player, damage)
+    local world_center_distance = math.sqrt((0 - player.position.x)^2 + (0 - player.position.y)^2)
+
+    local P_RADIUS = settings.global[mod_name .. "Protection-Radius"].value
+
+    if world_center_distance <= P_RADIUS then return 0 end
+
+    return damage
+end
+
+
+local damage_functions = {
+    player_inventory_damage,
+    ore_patch_damage,
+    belt_damage,
+    container_damage,
+    corpse_damage
+}
+
+
+function player_radiation_damage(event)
+    local damage = 0
+
+    for _, player in pairs(game.connected_players) do
+        if not (player.character and player.valid and player.surface) then goto continue end
+
+        for _, fn in pairs(damage_functions) do damage = damage + fn(player) end
+        if damage == 0 then goto continue end
+
+        playing_sound = playing_sound + 1
+
+        if playing_sound == 1 then
+            if damage <= 50 then
+                play_sound("LowRadiation", 0.2)
+            elseif damage <= 250 then
+                play_sound("MediumRadiation", 0.4)
+            else
+                play_sound("HighRadiation", 0.6)
+            end
+        end
+
+        ::sound_end::
+
+        -- Equipment resistances
+        damage = damage_resistances(player, damage)
+
+        -- Prevent immediate spawn kill by radiation
+        -- by dedicating the world center as radiation free
+        damage = prevent_spawn_death(player, damage)
+
+        player.character.damage(damage, game.forces.enemy, "radiation")
+
+        ::continue::
+
+        if playing_sound >= 2 then playing_sound = 0 end
+    end
 end
 
 
