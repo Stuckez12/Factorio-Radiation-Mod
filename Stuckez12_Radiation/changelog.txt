@@ -1,0 +1,40 @@
+Version: 0.4.1
+Date: 
+    Bugfixes:
+        - Player now take damage when in map view
+---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 
+    Changes:
+        - Added radiation suit with 250 base damage resistant + 95% resistant to radiation damage
+            - Includes medium sized equipment grid
+        - Locale English changes
+    Bugfixes:
+        - Fixed crash occuring when in map view
+    Bugs:
+        - Player does not take damage when in map view
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 
+    Changes:
+        - All buildings with type "assembling machine" now included in radiation damage calculations. This includes
+            - All Assembly Machines (mk1 to mk3)
+            - Centrifuge
+            - Oil Refinery
+            - Chemical Plant
+        - All Furnaces and Rocket Silo also included in calculations.
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 
+    Changes:
+        - Added world centre radiation protection to prevent instant death on respawn
+            - Protection radius configurable in mod settings (20 - 125 | default: 50)
+        - Changed default radiation distance from 4 to 12
+        - Radiation is now its own damage type
+        - Both containers and player corpses with radiated items are now included in damage calculations
+        - Small code refactor to make adding future damage functions easier to implement
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 
+    Changes:
+        - Initial mod creation
