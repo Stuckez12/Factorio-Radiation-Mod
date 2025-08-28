@@ -29,7 +29,13 @@ local playing_sound = 0
 
 -- Mod Functions
 function damage_resistances(player, damage)
-    local armor = player.get_inventory(defines.inventory.character_armor)[1]
+    if not player then return damage end
+
+    local armor_inv = player.get_inventory(defines.inventory.character_armor)
+
+    if not armor_inv then return damage end
+
+    local armor = armor_inv[1]
 
     if not armor or not armor.valid_for_read then return damage end
 
