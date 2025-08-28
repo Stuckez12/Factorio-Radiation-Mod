@@ -244,40 +244,42 @@ local damage_functions = {
 function player_radiation_damage(event)
     local damage = 0
 
-    for _, player in pairs(game.connected_players) do
-        if not (player.character and player.valid and player.surface) then goto continue end
+    for _, surface in pairs(game.surfaces) do
+        for _, character in pairs(surface.find_entities_filtered{ type = "character" }) do
+            if not (character.valid and character.surface) then goto continue end
 
-        for _, fn in pairs(damage_functions) do damage = damage + fn(player) end
-        if damage == 0 then goto continue end
+            for _, fn in pairs(damage_functions) do damage = damage + fn(character) end
+            if damage == 0 then goto continue end
 
-        playing_sound = playing_sound + 1
+            playing_sound = playing_sound + 1
 
-        -- Prevent immediate spawn kill by radiation
-        -- by dedicating the world center as radiation free
-        damage = prevent_spawn_death(player, damage)
+            -- Prevent immediate spawn kill by radiation
+            -- by dedicating the world center as radiation free
+            damage = prevent_spawn_death(character, damage)
 
-        if damage == 0 then goto sound_end end
+            if damage == 0 then goto sound_end end
 
-        if playing_sound == 1 then
-            if damage <= 50 and damage ~= 0 then
-                play_sound("LowRadiation", 0.2)
-            elseif damage <= 250 then
-                play_sound("MediumRadiation", 0.4)
-            elseif damage > 250 then
-                play_sound("HighRadiation", 0.6)
+            if playing_sound == 1 then
+                if damage <= 50 and damage ~= 0 then
+                    play_sound("LowRadiation", 0.2)
+                elseif damage <= 250 then
+                    play_sound("MediumRadiation", 0.4)
+                elseif damage > 250 then
+                    play_sound("HighRadiation", 0.6)
+                end
             end
+
+            ::sound_end::
+
+            -- Equipment resistances
+            damage = damage_resistances(character, damage)
+
+            character.damage(damage, game.forces.enemy, "radiation")
+
+            ::continue::
+
+            if playing_sound >= 2 then playing_sound = 0 end
         end
-
-        ::sound_end::
-
-        -- Equipment resistances
-        damage = damage_resistances(player, damage)
-
-        player.character.damage(damage, game.forces.enemy, "radiation")
-
-        ::continue::
-
-        if playing_sound >= 2 then playing_sound = 0 end
     end
 end
 
