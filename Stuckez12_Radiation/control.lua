@@ -14,27 +14,12 @@ storage.radiation_items = {
     ["atomic-bomb"] = 50
 }
 
--- storage.entities = {
---     "assembling-machine",
---     "furnace", 
---     "chemical-plant",
---     "centrifuge",
---     "logistic-container",
---     "car",
---     "cargo-wagon",
---     "reactor",
---     "rocket-silo",
---     "lab",
---     "inserter"
--- }
 
 storage.belt_entities = {
     "transport-belt",
     "underground-belt",
     "splitter"
 }
-
-
 
 
 -- Settings Variables
