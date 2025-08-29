@@ -1,3 +1,8 @@
+Version: 0.5.0
+Date: 28-08-2024
+    Changes:
+        - Vehicles and Spidertron types now included in radiation damage calculations.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 28-08-2024
     Bugfixes:
@@ -18,7 +23,7 @@ Date: 28-08-2024
 Version: 0.3.0
 Date: 28-08-2024
     Changes:
-        - All buildings with type "assembling machine" now included in radiation damage calculations. This includes
+        - All buildings with type "assembling machine" now included in radiation damage calculations. This includes:
             - All Assembly Machines (mk1 to mk3)
             - Centrifuge
             - Oil Refinery

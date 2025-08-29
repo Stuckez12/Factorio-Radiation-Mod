@@ -231,13 +231,55 @@ function building_damage(player)
 end
 
 
+function vehicle_damage(player)
+    local vehicle_entities = area_fetch_entities(player, {"car"})
+    local damage = 0
+
+    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+
+    for _, vehicle in pairs(vehicle_entities) do
+        local inv = vehicle.get_inventory(defines.inventory.car_trunk)
+
+        local distance = math.sqrt((vehicle.position.x - player.position.x)^2 + (vehicle.position.y - player.position.y)^2)
+
+        for item, value in pairs(storage.radiation_items) do
+            damage = damage + math.max(inv.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
+        end
+    end
+
+    return damage
+end
+
+
+function spider_vehicle_damage(player)
+    local spider_entities = area_fetch_entities(player, {"spider-vehicle"})
+    local damage = 0
+
+    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+
+    for _, spider in pairs(spider_entities) do
+        local inv = spider.get_inventory(defines.inventory.spider_trunk)
+
+        local distance = math.sqrt((spider.position.x - player.position.x)^2 + (spider.position.y - player.position.y)^2)
+
+        for item, value in pairs(storage.radiation_items) do
+            damage = damage + math.max(inv.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
+        end
+    end
+
+    return damage
+end
+
+
 local damage_functions = {
     player_inventory_damage,
     ore_patch_damage,
     belt_damage,
     container_damage,
     corpse_damage,
-    building_damage
+    building_damage,
+    vehicle_damage,
+    spider_vehicle_damage
 }
 
 
