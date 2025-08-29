@@ -7,4 +7,3 @@ Inspired by TibsRadiationMod
 # Planned Additions
 - Better item icons
 - Tiers of both equipment types (include quality?)
-- Take radiation damage from vehicles
