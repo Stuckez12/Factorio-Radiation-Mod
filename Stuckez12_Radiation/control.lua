@@ -64,8 +64,6 @@ function damage_resistances(player, damage)
         end
     end
 
-    game.print("Absorber: " .. absorber_count)
-
     for i = 1, reducer_count_mk2 do damage = math.max(0, damage * 0.6) end
     for i = 1, reducer_count do damage = math.max(0, damage * 0.8) end
 
@@ -321,12 +319,8 @@ function player_radiation_damage(event)
                 end
             end
 
-            game.print("Damage Before Resistance: " .. damage)
-
             -- Equipment resistances
             damage = damage_resistances(character, damage)
-
-            game.print("Damage After Resistance: " .. damage)
 
             character.damage(damage, game.forces.enemy, "radiation")
 
