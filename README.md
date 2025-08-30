@@ -5,5 +5,4 @@ Inspired by TibsRadiationMod
 
 
 # Planned Additions
-- Better item icons
-- Tiers of both equipment types (include quality?)
+- Improve Code Quality

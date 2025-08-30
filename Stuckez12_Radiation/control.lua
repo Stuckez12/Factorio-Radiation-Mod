@@ -48,22 +48,30 @@ function damage_resistances(player, damage)
     -- Reduce then absorb radiation damage
     local absorber_count = 0
     local reducer_count = 0
+    local reducer_count_mk2 = 0
 
     for _, entry in ipairs(contents) do
         if entry.name == "radiation-absorption-equipment" then
-            absorber_count = entry.count
+            absorber_count = absorber_count + entry.count
+        elseif entry.name == "radiation-absorption-equipment-mk2" then
+            absorber_count = absorber_count + entry.count + entry.count
         end
 
         if entry.name == "radiation-reduction-equipment" then
-            reducer_count = entry.count
+            reducer_count = reducer_count + entry.count
+        elseif entry.name == "radiation-reduction-equipment-mk2" then
+            reducer_count_mk2 = entry.count
         end
     end
 
-    for i = 1, reducer_count do damage = math.max(0, damage * 0.95) end
+    game.print("Absorber: " .. absorber_count)
+
+    for i = 1, reducer_count_mk2 do damage = math.max(0, damage * 0.6) end
+    for i = 1, reducer_count do damage = math.max(0, damage * 0.8) end
 
     damage = math.max(0, damage - (absorber_count * 10))
 
-    return damage / 10
+    return damage
 end
 
 
@@ -299,7 +307,9 @@ function player_radiation_damage(event)
             -- by dedicating the world center as radiation free
             damage = prevent_spawn_death(character, damage)
 
-            if damage == 0 then goto sound_end end
+            if damage == 0 then goto continue end
+
+            damage = damage / 10
 
             if playing_sound == 1 then
                 if damage <= 50 and damage ~= 0 then
@@ -311,10 +321,12 @@ function player_radiation_damage(event)
                 end
             end
 
-            ::sound_end::
+            game.print("Damage Before Resistance: " .. damage)
 
             -- Equipment resistances
             damage = damage_resistances(character, damage)
+
+            game.print("Damage After Resistance: " .. damage)
 
             character.damage(damage, game.forces.enemy, "radiation")
 

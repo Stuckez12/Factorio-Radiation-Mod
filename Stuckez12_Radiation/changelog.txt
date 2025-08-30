@@ -1,3 +1,11 @@
+Version: 0.6.0
+Date: 30-08-2024
+    Changes:
+        - Added MK2 equipment for both Reduction and Absorption pieces
+            - Reduction Mk2: 40% Radiation Damage Reduction
+            - Absorption Mk2: 20 radiation damage absorbed
+        - Buffed Reduction MK1 from 5% to 20%
+---------------------------------------------------------------------------------------------------
 Version: 0.5.0
 Date: 29-08-2024
     Changes:
