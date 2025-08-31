@@ -14,12 +14,13 @@ storage.radiation_items = {
     ["atomic-bomb"] = 50
 }
 
-
 storage.belt_entities = {
     "transport-belt",
     "underground-belt",
     "splitter"
 }
+
+storage.active_characters = {}
 
 
 -- Settings Variables
@@ -292,44 +293,92 @@ local damage_functions = {
 function player_radiation_damage(event)
     local damage = 0
 
-    for _, surface in pairs(game.surfaces) do
-        for _, character in pairs(surface.find_entities_filtered{ type = "character" }) do
-            if not (character.valid and character.surface) then goto continue end
+    storage.active_characters = storage.active_characters or {}
 
-            for _, fn in pairs(damage_functions) do damage = damage + fn(character) end
-            if damage == 0 then goto continue end
+    -- Do only when no characters have been detected
+    if next(storage.active_characters) == nil then
+        add_all_player_references()
+    end
 
-            playing_sound = playing_sound + 1
+    for _, character in pairs(storage.active_characters) do -- PROBLEMATIC CODE. Rewrite to store all characters made to save on UPS drain
+        if not (character.valid and character.surface) then goto continue end
 
-            -- Prevent immediate spawn kill by radiation
-            -- by dedicating the world center as radiation free
-            damage = prevent_spawn_death(character, damage)
+        for _, fn in pairs(damage_functions) do damage = damage + fn(character) end
+        if damage == 0 then goto continue end
 
-            if damage == 0 then goto continue end
+        playing_sound = playing_sound + 1
 
-            damage = damage / 10
+        -- Prevent immediate spawn kill by radiation
+        -- by dedicating the world center as radiation free
+        damage = prevent_spawn_death(character, damage)
 
-            if playing_sound == 1 then
-                if damage <= 50 and damage ~= 0 then
-                    play_sound("LowRadiation", 0.2)
-                elseif damage <= 250 then
-                    play_sound("MediumRadiation", 0.4)
-                elseif damage > 250 then
-                    play_sound("HighRadiation", 0.6)
-                end
+        if damage == 0 then goto continue end
+
+        damage = damage / 10
+
+        if playing_sound == 1 then
+            if damage <= 50 and damage ~= 0 then
+                play_sound("LowRadiation", 0.2)
+            elseif damage <= 250 then
+                play_sound("MediumRadiation", 0.4)
+            elseif damage > 250 then
+                play_sound("HighRadiation", 0.6)
             end
-
-            -- Equipment resistances
-            damage = damage_resistances(character, damage)
-
-            character.damage(damage, game.forces.enemy, "radiation")
-
-            ::continue::
-
-            if playing_sound >= 2 then playing_sound = 0 end
         end
+
+        -- Equipment resistances
+        damage = damage_resistances(character, damage)
+
+        character.damage(damage, game.forces.enemy, "radiation")
+
+        ::continue::
+
+        if playing_sound >= 2 then playing_sound = 0 end
     end
 end
 
 
 script.on_nth_tick(30, player_radiation_damage)
+
+
+function add_character_reference(character)
+    if not (character and character.valid) then return end
+
+    table.insert(storage.active_characters, character)
+end
+
+
+function verify_character_references()
+    local active_characters = {}
+
+    for _, char in pairs(storage.active_characters) do
+        if char and char.valid then
+            table.insert(active_characters, char)
+        end
+    end
+
+    storage.active_characters = active_characters
+end
+
+
+function add_all_player_references()
+    for _, player in pairs(game.connected_players) do
+        if player.valid and player.character then add_character_reference(player.character) end
+    end
+end
+
+
+function add_player(event)
+    local player = game.get_player(event.player_index)
+    
+    if player and player.character then add_character_reference(player.character) end
+end
+
+
+-- Events when a player character is created
+script.on_event(defines.events.on_player_created, add_player)
+script.on_event(defines.events.on_player_respawned, add_player)
+script.on_event(defines.events.on_player_joined_game, add_player)
+
+-- Events when a player character is destroyed
+script.on_event(defines.events.on_player_died, verify_character_references)
