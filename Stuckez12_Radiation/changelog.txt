@@ -1,5 +1,5 @@
-Version: 0.6.0
-Date: 2-09-2024
+Version: 0.7.1
+Date: 02-09-2025
     Changes:
         - Refactored entire code logic
         - Added new entity sources for potential radiation damage
@@ -10,12 +10,12 @@ Date: 2-09-2024
             - Logistic containers
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.0
-Date: 31-08-2024
+Date: 31-08-2025
     Bugfixes:
         - Fixed excessive UPS useage
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.0
-Date: 30-08-2024
+Date: 30-08-2025
     Changes:
         - Added MK2 equipment for both Reduction and Absorption pieces
             - Reduction Mk2: 40% Radiation Damage Reduction
@@ -23,17 +23,17 @@ Date: 30-08-2024
         - Buffed Reduction MK1 from 5% to 20%
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0
-Date: 29-08-2024
+Date: 29-08-2025
     Changes:
         - Vehicles and Spidertron types now included in radiation damage calculations.
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.1
-Date: 28-08-2024
+Date: 28-08-2025
     Bugfixes:
         - Player now take damage when in map view
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
-Date: 28-08-2024
+Date: 28-08-2025
     Changes:
         - Added radiation suit with 250 base damage resistant + 95% resistant to radiation damage
             - Includes medium sized equipment grid
@@ -45,7 +45,7 @@ Date: 28-08-2024
         - Player does not take damage when in map view
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
-Date: 28-08-2024
+Date: 28-08-2025
     Changes:
         - All buildings with type "assembling machine" now included in radiation damage calculations. This includes:
             - All Assembly Machines (mk1 to mk3)
@@ -55,7 +55,7 @@ Date: 28-08-2024
         - All Furnaces and Rocket Silo also included in calculations.
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.0
-Date: 27-08-2024
+Date: 27-08-2025
     Changes:
         - Added world centre radiation protection to prevent instant death on respawn
             - Protection radius configurable in mod settings (20 - 125 | default: 50)
@@ -65,6 +65,6 @@ Date: 27-08-2024
         - Small code refactor to make adding future damage functions easier to implement
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
-Date: 26-08-2024
+Date: 26-08-2025
     Changes:
         - Initial mod creation
