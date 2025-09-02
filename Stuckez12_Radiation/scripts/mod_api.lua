@@ -1,3 +1,5 @@
+local utils = require("scripts.utils")
+
 local remote_error = "Stuckez12-Radiation Mod API Error:\n"
 
 local function add_radioactive_item(item, value)
@@ -6,7 +8,7 @@ local function add_radioactive_item(item, value)
         error(remote_error .. "Provided item name is invalid. Expected a string not a " .. type(item))
     end
     
-    if not is_item(item) then
+    if not utils.is_item(item) then
         error(remote_error .. "Provided item name: " .. item .. "is not a valid item.")
     end
     

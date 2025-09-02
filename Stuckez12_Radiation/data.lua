@@ -41,6 +41,6 @@ end
 data:extend({
     {
         type = "damage-type",
-        name = "radiation"
+        name = "Stuckez12-radiation"
     }
 })

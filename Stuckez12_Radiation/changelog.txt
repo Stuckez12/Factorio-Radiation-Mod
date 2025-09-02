@@ -1,4 +1,20 @@
 Version: 0.6.0
+Date: 2-09-2024
+    Changes:
+        - Refactored entire code logic
+        - Added new entity sources for potential radiation damage
+            - Construction and Logistic robots
+            - Locomotives and Cargo Wagons
+            - Item entities on the floor
+            - Nuclear reactors
+            - Logistic containers
+---------------------------------------------------------------------------------------------------
+Version: 0.7.0
+Date: 31-08-2024
+    Bugfixes:
+        - Fixed excessive UPS useage
+---------------------------------------------------------------------------------------------------
+Version: 0.6.0
 Date: 30-08-2024
     Changes:
         - Added MK2 equipment for both Reduction and Absorption pieces

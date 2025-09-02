@@ -7,7 +7,7 @@ data:extend({
         resistances =
         {
             {
-                type = "radiation",
+                type = "Stuckez12-radiation",
                 decrease = 250,
                 percent = 95
             }

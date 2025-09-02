@@ -1,5 +1,8 @@
 require("scripts.mod_api")
 
+local player_management = require("scripts.player_management")
+local utils = require("scripts.utils")
+
 -- Global Variables
 storage.radiation_items = {
     ["uranium-ore"] = 1,
@@ -14,13 +17,40 @@ storage.radiation_items = {
     ["atomic-bomb"] = 50
 }
 
-storage.belt_entities = {
-    "transport-belt",
-    "underground-belt",
-    "splitter"
-}
 
 storage.active_characters = {}
+
+
+local crafter_defines = {
+    defines.inventory.crafter_input,
+    defines.inventory.crafter_output,
+    defines.inventory.crafter_modules,
+    defines.inventory.crafter_trash
+}
+
+
+local type_defines = {
+    ["container"] = {defines.inventory.chest},
+    ["logistic-container"] = {defines.inventory.chest, defines.inventory.logistic_container_trash},
+    ["character-corpse"] = {defines.inventory.chest},
+    ["assembling-machine"] = crafter_defines,
+    ["rocket-silo"] = crafter_defines,
+    ["furnace"] = crafter_defines,
+    ["car"] = {defines.inventory.car_trunk, defines.inventory.car_ammo, defines.inventory.car_trash, defines.inventory.fuel},
+    ["spider-vehicle"] = {defines.inventory.spider_trunk, defines.inventory.spider_ammo, defines.inventory.spider_trash},
+    ["reactor"] = {defines.inventory.fuel, defines.inventory.burnt_result},
+    ["construction-robot"] = {defines.inventory.robot_cargo},
+    ["logistic-robot"] = {defines.inventory.robot_cargo},
+    ["locomotive"] = {defines.inventory.fuel},
+    ["cargo-wagon"] = {defines.inventory.cargo_wagon}
+}
+
+
+local belt_types = {
+    ["transport-belt"] = true,
+    ["underground-belt"] = true,
+    ["splitter"] = true
+}
 
 
 -- Settings Variables
@@ -96,35 +126,26 @@ end
 
 
 function player_inventory_damage(player)
-    local inventory = player.get_main_inventory()
     local damage = 0
 
-    if not inventory then return 0 end
+    local inv_types = {
+        defines.inventory.character_main,
+        defines.inventory.character_guns,
+        defines.inventory.character_ammo,
+        defines.inventory.character_armor,
+        defines.inventory.character_vehicle,
+        defines.inventory.character_trash
+    }
 
-    for item, value in pairs(storage.radiation_items) do
-        local amount = inventory.get_item_count(item)
-        damage = damage + (amount * value)
-    end
+    for _, define in pairs(inv_types) do
+        local inv = player.get_inventory(define)
 
-    return damage
-end
+        if not inv then goto continue end
 
+        for item, value in pairs(storage.radiation_items) do
+            local count = inv.get_item_count(item)
 
-function ore_patch_damage(player)
-    local ore_entities = area_fetch_entities(player, {"resource"})
-    local damage = 0
-
-    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
-
-    for _, resource in pairs(ore_entities) do
-        local value = storage.radiation_items[resource.name]
-
-        if not value then goto continue end
-
-        local distance = math.sqrt((resource.position.x - player.position.x)^2 + (resource.position.y - player.position.y)^2)
-
-        if distance <= R_RADIUS then
-            damage = damage + (value * (1 - (distance / R_RADIUS)) * math.max(resource.amount / 1000, 1))
+            damage = damage + math.max(count * value, 0)
         end
 
         ::continue::
@@ -134,70 +155,38 @@ function ore_patch_damage(player)
 end
 
 
-function belt_damage(player)
-    local belt_entities = area_fetch_entities(player, storage.belt_entities)
+function ore_patch_damage(player, resource)
+    local value = storage.radiation_items[resource.name]
+
+    if not value then return 0 end
+
+    local dist_percent = calculate_distance_percent(player, resource)
+
+    if dist_percent == 0 then return 0 end
+
+    return value * dist_percent * math.max(resource.amount / 1000, 1)
+end
+
+
+function belt_damage(player, belt)
     local damage = 0
 
     local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
-    
-    for _, belt in pairs(belt_entities) do
-        for i = 1, belt.get_max_transport_line_index() do
-            local line = belt.get_transport_line(i)
-            local contents = line.get_contents()
 
-            for _, item in pairs(contents) do
-                local value = storage.radiation_items[item.name]
+    for i = 1, belt.get_max_transport_line_index() do
+        local line = belt.get_transport_line(i)
+        local contents = line.get_contents()
 
-                if value then
-                    local distance = math.sqrt((belt.position.x - player.position.x)^2 + (belt.position.y - player.position.y)^2)
+        for _, item in pairs(contents) do
+            local value = storage.radiation_items[item.name]
 
-                    if distance <= R_RADIUS then
-                        damage = damage + math.max(value * (1 - (distance / R_RADIUS)) * item.count, 0)
-                    end
+            if value then
+                local distance = utils.distance(player, belt)
+
+                if distance <= R_RADIUS then
+                    damage = damage + math.max(value * (1 - (distance / R_RADIUS)) * item.count, 0)
                 end
             end
-        end
-    end
-
-    return damage
-end
-
-
-function container_damage(player)
-    local container_entities = area_fetch_entities(player, {"container"})
-    local damage = 0
-
-    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
-
-    for _, container in pairs(container_entities) do
-        local inv = container.get_inventory(defines.inventory.chest)
-
-        local distance = math.sqrt((container.position.x - player.position.x)^2 + (container.position.y - player.position.y)^2)
-
-        for item, value in pairs(storage.radiation_items) do
-            local amount = inv.get_item_count(item)
-            damage = damage + math.max(amount * value * (1 - (distance / R_RADIUS)), 0)
-        end
-    end
-
-    return damage
-end
-
-
-function corpse_damage(player)
-    local corpse_entities = area_fetch_entities(player, {"character-corpse"})
-    local damage = 0
-
-    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
-
-    for _, corpse in pairs(corpse_entities) do
-        local inv = corpse.get_inventory(defines.inventory.chest)
-
-        local distance = math.sqrt((corpse.position.x - player.position.x)^2 + (corpse.position.y - player.position.y)^2)
-
-        for item, value in pairs(storage.radiation_items) do
-            local amount = inv.get_item_count(item)
-            damage = damage + math.max(amount * value * (1 - (distance / R_RADIUS)), 0)
         end
     end
 
@@ -216,78 +205,97 @@ function prevent_spawn_death(player, damage)
 end
 
 
-function building_damage(player)
-    local building_entities = area_fetch_entities(player, {"assembling-machine", "rocket-silo", "furnace"})
-    local damage = 0
+function calculate_distance_percent(player, entity)
+    local radius = settings.global[mod_name .. "Radiation-Radius"].value
+    local distance = utils.distance(player, entity)
 
-    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
+    return math.max(1 - (distance / radius), 0)
+end
 
-    for _, building in pairs(building_entities) do
-        local inv_in = building.get_inventory(defines.inventory.crafter_input)
-        local inv_out = building.get_inventory(defines.inventory.crafter_output)
 
-        local distance = math.sqrt((building.position.x - player.position.x)^2 + (building.position.y - player.position.y)^2)
+function calculate_entity_radiation_damage(player, entity, inv, damage)
+    local dist_percent = calculate_distance_percent(player, entity)
 
-        for item, value in pairs(storage.radiation_items) do
-            damage = damage + math.max(inv_in.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
-            damage = damage + math.max(inv_out.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
-        end
+    for item, value in pairs(storage.radiation_items) do
+        local count = inv.get_item_count(item)
+
+        damage = damage + math.max(count * value * dist_percent, 0)
     end
 
     return damage
 end
 
 
-function vehicle_damage(player)
-    local vehicle_entities = area_fetch_entities(player, {"car"})
+function calculate_damage(player)
+    local entity_types = {
+        "resource",
+        "transport-belt",
+        "underground-belt",
+        "splitter",
+        "container",
+        "logistic-container",
+        "character-corpse",
+        "assembling-machine",
+        "rocket-silo",
+        "furnace",
+        "car",
+        "spider-vehicle",
+        "reactor",
+        "item-entity",
+        "construction-robot",
+        "logistic-robot",
+        "locomotive",
+        "cargo-wagon"
+    }
+
+    local entities = area_fetch_entities(player, entity_types)
     local damage = 0
 
     local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
 
-    for _, vehicle in pairs(vehicle_entities) do
-        local inv = vehicle.get_inventory(defines.inventory.car_trunk)
+    for _, entity in pairs(entities) do
 
-        local distance = math.sqrt((vehicle.position.x - player.position.x)^2 + (vehicle.position.y - player.position.y)^2)
+        if belt_types[entity.type] then
+            damage = damage + belt_damage(player, entity)
 
-        for item, value in pairs(storage.radiation_items) do
-            damage = damage + math.max(inv.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
+        elseif entity.type == "resource" then
+            damage = damage + ore_patch_damage(player, entity)
+
+        elseif entity.type == "item-entity" then
+            if entity.valid and entity.stack and entity.stack.valid_for_read then
+                local item_name = entity.stack.name
+                local count = entity.stack.count
+
+                local value = storage.radiation_items[item_name]
+
+                if value then
+                    local dist_percent = calculate_distance_percent(player, entity)
+
+                    damage = damage + (count * value * dist_percent)
+                end
+            end
+
+        else
+            local all_defines = type_defines[entity.type]
+
+            if not all_defines then goto continue end
+
+            for _, define in pairs(all_defines) do
+                local inv = entity.get_inventory(define)
+
+                if not inv then goto continue_loop end
+
+                damage = calculate_entity_radiation_damage(player, entity, inv, damage)
+
+                ::continue_loop::
+            end
+
+            ::continue::
         end
     end
 
-    return damage
+    return damage + player_inventory_damage(player)
 end
-
-
-function spider_vehicle_damage(player)
-    local spider_entities = area_fetch_entities(player, {"spider-vehicle"})
-    local damage = 0
-
-    local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
-
-    for _, spider in pairs(spider_entities) do
-        local inv = spider.get_inventory(defines.inventory.spider_trunk)
-
-        local distance = math.sqrt((spider.position.x - player.position.x)^2 + (spider.position.y - player.position.y)^2)
-
-        for item, value in pairs(storage.radiation_items) do
-            damage = damage + math.max(inv.get_item_count(item) * value * (1 - (distance / R_RADIUS)), 0)
-        end
-    end
-
-    return damage
-end
-
-
-local damage_functions = {
-    player_inventory_damage,
-    ore_patch_damage,
-    belt_damage,
-    container_damage,
-    corpse_damage,
-    building_damage,
-    vehicle_damage,
-    spider_vehicle_damage
-}
 
 
 function player_radiation_damage(event)
@@ -297,13 +305,13 @@ function player_radiation_damage(event)
 
     -- Do only when no characters have been detected
     if next(storage.active_characters) == nil then
-        add_all_player_references()
+        player_management.add_all_player_references()
     end
 
-    for _, character in pairs(storage.active_characters) do -- PROBLEMATIC CODE. Rewrite to store all characters made to save on UPS drain
+    for _, character in pairs(storage.active_characters) do
         if not (character.valid and character.surface) then goto continue end
 
-        for _, fn in pairs(damage_functions) do damage = damage + fn(character) end
+        damage = calculate_damage(character)
         if damage == 0 then goto continue end
 
         playing_sound = playing_sound + 1
@@ -314,7 +322,7 @@ function player_radiation_damage(event)
 
         if damage == 0 then goto continue end
 
-        damage = damage / 10
+        damage = damage / 15
 
         if playing_sound == 1 then
             if damage <= 50 and damage ~= 0 then
@@ -329,7 +337,7 @@ function player_radiation_damage(event)
         -- Equipment resistances
         damage = damage_resistances(character, damage)
 
-        character.damage(damage, game.forces.enemy, "radiation")
+        character.damage(damage, game.forces.enemy, "Stuckez12-radiation")
 
         ::continue::
 
@@ -338,47 +346,13 @@ function player_radiation_damage(event)
 end
 
 
-script.on_nth_tick(30, player_radiation_damage)
-
-
-function add_character_reference(character)
-    if not (character and character.valid) then return end
-
-    table.insert(storage.active_characters, character)
-end
-
-
-function verify_character_references()
-    local active_characters = {}
-
-    for _, char in pairs(storage.active_characters) do
-        if char and char.valid then
-            table.insert(active_characters, char)
-        end
-    end
-
-    storage.active_characters = active_characters
-end
-
-
-function add_all_player_references()
-    for _, player in pairs(game.connected_players) do
-        if player.valid and player.character then add_character_reference(player.character) end
-    end
-end
-
-
-function add_player(event)
-    local player = game.get_player(event.player_index)
-    
-    if player and player.character then add_character_reference(player.character) end
-end
+script.on_nth_tick(20, player_radiation_damage)
 
 
 -- Events when a player character is created
-script.on_event(defines.events.on_player_created, add_player)
-script.on_event(defines.events.on_player_respawned, add_player)
-script.on_event(defines.events.on_player_joined_game, add_player)
+script.on_event(defines.events.on_player_created, player_management.add_player)
+script.on_event(defines.events.on_player_respawned, player_management.add_player)
+script.on_event(defines.events.on_player_joined_game, player_management.add_player)
 
 -- Events when a player character is destroyed
-script.on_event(defines.events.on_player_died, verify_character_references)
+script.on_event(defines.events.on_player_died, player_management.verify_character_references)
