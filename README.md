@@ -5,10 +5,6 @@ Inspired by TibsRadiationMod
 
 
 # Development Roadmap
-## Version 0.7.1
-Refactor all code to be more efficient.
-No new features will be added.
-
 ## Version 0.8
 Add in in official tips and tricks explaining how each part of the mod works.
 - Radiation damage calculation

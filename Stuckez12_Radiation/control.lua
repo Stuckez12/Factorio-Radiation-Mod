@@ -245,7 +245,8 @@ function calculate_damage(player)
         "construction-robot",
         "logistic-robot",
         "locomotive",
-        "cargo-wagon"
+        "cargo-wagon",
+        "inserter"
     }
 
     local entities = area_fetch_entities(player, entity_types)
@@ -254,7 +255,6 @@ function calculate_damage(player)
     local R_RADIUS = settings.global[mod_name .. "Radiation-Radius"].value
 
     for _, entity in pairs(entities) do
-
         if belt_types[entity.type] then
             damage = damage + belt_damage(player, entity)
 
@@ -275,22 +275,27 @@ function calculate_damage(player)
                 end
             end
 
+        elseif entity.type == "inserter" then
+            if entity.held_stack.valid_for_read then
+                local value = storage.radiation_items[entity.held_stack.name]
+
+                if value then
+                    local dist_percent = calculate_distance_percent(player, entity)
+
+                    damage = damage + (entity.held_stack.count * value * dist_percent)
+                end
+            end
+
         else
             local all_defines = type_defines[entity.type]
 
-            if not all_defines then goto continue end
+            if all_defines then 
+                for _, define in pairs(all_defines) do
+                    local inv = entity.get_inventory(define)
 
-            for _, define in pairs(all_defines) do
-                local inv = entity.get_inventory(define)
-
-                if not inv then goto continue_loop end
-
-                damage = calculate_entity_radiation_damage(player, entity, inv, damage)
-
-                ::continue_loop::
+                    if inv then damage = calculate_entity_radiation_damage(player, entity, inv, damage) end
+                end
             end
-
-            ::continue::
         end
     end
 

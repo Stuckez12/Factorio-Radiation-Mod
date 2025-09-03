@@ -11,7 +11,7 @@ data:extend({
         name = "radiation-protection",
         icon = "__Stuckez12_Radiation__/graphics/icon/tech.png",
         icon_size = 128,
-        prerequisites = {"uranium-mining"},
+        prerequisites = {"uranium-mining", "power-armor"},
         effects = {
             {
                 type = "unlock-recipe",
@@ -45,7 +45,7 @@ data:extend({
         name = "advanced-radiation-protection",
         icon = "__Stuckez12_Radiation__/graphics/icon/tech.png",
         icon_size = 128,
-        prerequisites = {"kovarex-enrichment-process", "radiation-protection"},
+        prerequisites = {"kovarex-enrichment-process", "radiation-protection", "power-armor-mk2"},
         effects = {
             {
                 type = "unlock-recipe",
@@ -63,7 +63,7 @@ data:extend({
                 {"logistic-science-pack", 1},
                 {"military-science-pack", 1},
                 {"chemical-science-pack", 1},
-                {"production-science-pack", 1}
+                {"utility-science-pack", 1}
             },
             time = 30
         },
