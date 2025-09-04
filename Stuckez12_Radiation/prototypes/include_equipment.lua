@@ -20,10 +20,6 @@ data:extend({
             {
                 type = "unlock-recipe",
                 recipe = "radiation-reduction-recipe"
-            },
-            {
-                type = "unlock-recipe",
-                recipe = "radiation-suit-recipe"
             }
         },
         unit = {
@@ -54,6 +50,10 @@ data:extend({
             {
                 type = "unlock-recipe",
                 recipe = "radiation-reduction-mk2-recipe"
+            },
+            {
+                type = "unlock-recipe",
+                recipe = "radiation-suit-recipe"
             }
         },
         unit = {
