@@ -20,6 +20,11 @@ function player_management.add_character_reference(character)
 end
 
 
+function player_management.remove_character_reference(character)
+    storage.active_characters[character] = nil
+end
+
+
 function player_management.add_all_player_references()
     for _, player in pairs(game.connected_players) do
         if player.valid and player.character then player_management.add_character_reference(player.character) end

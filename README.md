@@ -8,6 +8,7 @@ Inspired by TibsRadiationMod
 ## Version 0.9
 Add in a radiation resistant wall that can be incorporated to factory designs and protection.
 - Each wall between the player character reduces radiation damage by 500 (value subject to change)
+DEV NOTE: further reduce the number of calls to the radiation calculation per player. if they dont move, save and re apply damage (robots/trains/spidertron can affect damage (is the filter area check the main issue of performance decrease))
 
 ## Version 0.10
 Behemouth biters emit radiation themselves (cause they're green why else)

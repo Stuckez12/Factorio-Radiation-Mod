@@ -194,7 +194,7 @@ function calculate_distance_percent(player, entity)
 
     local distance = utils.distance(player, entity)
 
-    return math.max(1 - (distance / radius), 0)
+    return math.max((1 - (distance / radius)) ^ 2, 0)
 end
 
 

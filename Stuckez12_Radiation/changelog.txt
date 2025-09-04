@@ -1,5 +1,14 @@
 Version: 0.8.0
 Date: 04-09-2025
+    Changes:
+        - Radiation damage now scales exponentially with distance instead of linear approach
+        - Modifications to both tips and tricks radiation intro and distance simulations
+        - English locale spelling changes
+    Bugfixes:
+        - Fixed tips and tricks radiation intro crash just before looping
+---------------------------------------------------------------------------------------------------
+Version: 0.8.0
+Date: 04-09-2025
     Additions:
         - 5 tips and tricks simulations explaining everything currently implemented
         - Inserters included in damage calculations

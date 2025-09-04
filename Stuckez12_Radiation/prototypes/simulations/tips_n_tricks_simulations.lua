@@ -22,7 +22,7 @@ simulations.uranium_patch_walk_over = {
             for dy = -3, 3 do
                 surface.create_entity{
                     name = "uranium-ore",
-                    amount = 40000,
+                    amount = 50000,
                     position = {dx, dy},
                     force = "neutral"
                 }
@@ -134,14 +134,14 @@ simulations.radiation_distance_impact = {
 
         surface.create_entity{
             name = "uranium-ore",
-            amount = 500000,
+            amount = 1000000,
             position = {0, 0},
             force = "neutral"
         }
 
         script.on_nth_tick(20, radiation_funcs.player_radiation_damage)
 
-        script.on_nth_tick(900, function(event)
+        script.on_nth_tick(1800, function(event)
             local surface = game.surfaces[1]
 
             local entities = surface.find_entities_filtered{
