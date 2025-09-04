@@ -5,11 +5,6 @@ Inspired by TibsRadiationMod
 
 
 # Development Roadmap
-## Version 0.8
-Add in in official tips and tricks explaining how each part of the mod works.
-- Radiation damage calculation
-- Radiation resistant suit and equipment
-
 ## Version 0.9
 Add in a radiation resistant wall that can be incorporated to factory designs and protection.
 - Each wall between the player character reduces radiation damage by 500 (value subject to change)

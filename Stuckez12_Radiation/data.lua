@@ -1,5 +1,5 @@
 require("prototypes.include_equipment")
-
+require("prototypes.simulations.tips_n_tricks")
 
 local sounds = {
     {

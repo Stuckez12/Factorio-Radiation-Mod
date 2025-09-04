@@ -35,3 +35,6 @@ data:extend({
         }
     }
 })
+
+
+table.insert(data.raw.character["character"].animations[2].armors, "radiation-suit")
