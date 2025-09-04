@@ -1,5 +1,5 @@
-Version: 0.8.0
-Date: 04-09-2025
+Version: 0.8.1
+Date: 05-09-2025
     Changes:
         - Radiation damage now scales exponentially with distance instead of linear approach
         - Modifications to both tips and tricks radiation intro and distance simulations
