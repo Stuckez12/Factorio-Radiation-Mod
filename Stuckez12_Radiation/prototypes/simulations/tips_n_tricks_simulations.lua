@@ -256,8 +256,8 @@ simulations.radiation_suit = {
 
         game.surfaces[1].create_entities_from_blueprint_string
         {
-            string = "0eNqNkNEKgzAMRf8lz1U2tYr9lTFG1TACGrtWx0T672t1sIftwbckN/cekhWafkZjiSdQK1A7sgN1WcHRnXUfZ6wHBAUdOdPrJTGasQcvgLjDF6izvwpAnmgi3K1bs9x4Hhq0YUH8jxBgRhdcI0dKSKrkKZUCFlBJLlMZEe0ufvxWd6SjIdGNG63ZSnzMZIbABO/FDzw7Di+Pwt1MERbOpgmHIH1fKOCJ1m2psszqoq5llcu8qDLv35o/eKg=",
-            position = {0, 2}
+            string = "0eNqt0sGOgyAQBuB3mTM2WxWNvMpms0GdbCbRkQXZrDG8e8E26aE9kKY3YPj/7zI79JNHY4lXUDvQsLAD9bmDox/WU3pjPSMoGMmZSW+F0YwTBAHEI/6DOocvAcgrrYTX6HHZvtnPPdr4QTyvEGAWF1MLJyU2tU13kgI2UEUlTzIRw3V4y1s9kk6BwuLoh+OEv57MHEkIQTzY5St2/R67yrbbj1xb926xJgOvX8Hlm3CZjze5uPOUsLhrtOIcR/e9FfCH1h2tsim7uutkW8mqbssQLjz+9jg=",
+            position = {0, 3}
         }
 
         local radiation_funcs = require("__Stuckez12_Radiation__/scripts/radiation_damage")
