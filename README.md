@@ -7,6 +7,7 @@ Inspired by TibsRadiationMod
 # Development Roadmap
 ## Version 0.9.1
 Cery's mod compatibility
+Space Age mod compatibility
 
 ## Version 0.9.2
 PlutoniumEnergy mod compatibility
@@ -21,13 +22,11 @@ Bobs mod compatibility
 ## Version 0.10
 Behemouth biters emit radiation themselves (cause they're green why else)
 - If possible, their corpses will emit radiation as well
-
-## Version 0.11
 Add pipe contents to be included in radiation damage.
 Mainly for mods that have/want to have radioactive liquids in pipes/storage tanks
-Add in overlay of a radiation symbol. It's opacity is linked to the damage the character takes (glitch effect if possible).
 
-# Version 0.12
+## Version 0.11
+Add in overlay of a radiation symbol. It's opacity is linked to the damage the character takes (glitch effect if possible).
 Implement MK-3 Absorption and Reduction equipment
 - Absorption MK 3: Reduces radiation damage by 50 per equipment.
 - Reduction MK 3: Reduces radiation damage by 60% per equipment.
