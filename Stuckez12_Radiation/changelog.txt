@@ -1,3 +1,16 @@
+Version: 0.9.0
+Date: 05-09-2025
+    Additions:
+        - Two commands to either add or remove the current character the player is playing
+        - Radiation resistant wall preventing 200 radiation damage
+    Changes:
+        - Locale updated
+        - Changed crafting time for all equipment
+            - Radiation Absorption: 5s -> 12s
+            - Radiation Absorption MK2: 5s -> 20s
+            - Radiation Reduction: 5s -> 12s
+            - Radiation Reduction MK2: 5s -> 20s
+---------------------------------------------------------------------------------------------------
 Version: 0.8.1
 Date: 05-09-2025
     Changes:

@@ -1,4 +1,5 @@
 require("scripts.mod_api")
+require("scripts.commands")
 
 local radiation_funcs = require("scripts.radiation_damage")
 local player_management = require("scripts.player_management")

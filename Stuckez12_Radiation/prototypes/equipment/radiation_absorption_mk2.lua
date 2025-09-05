@@ -35,7 +35,7 @@ data:extend({
         type = "recipe",
         name = "radiation-absorption-mk2-recipe",
         enabled = false,
-        energy_required = 5,
+        energy_required = 20,
         ingredients = {
             {type = "item", name = "radiation-absorption-equipment", amount = 2},
             {type = "item", name = "steel-plate", amount = 80},

@@ -31,6 +31,8 @@ local belt_types = {
     ["underground-belt"] = true,
     ["splitter"] = true
 }
+local damage_reduction = 15
+local wall_resistance = 200
 
 
 -- Settings variables
@@ -99,11 +101,76 @@ function area_fetch_entities(player, entities)
 
     return player.surface.find_entities_filtered{
         area = {
-            {player.position.x - radius, player.position.y - radius},
+            {math.floor(player.position.x) - radius, math.floor(player.position.y) - radius},
             {player.position.x + radius, player.position.y + radius}
         },
         type = entities
     }
+end
+
+
+function bresenham_wall_grid_count(wall_grid, dest_x, dest_y, p_x, p_y)
+    local wall_count = 0;
+
+    local dx = math.abs(p_x - dest_x)
+    local dy = math.abs(p_y - dest_y)
+    local x, y = dest_x, dest_y
+
+    local sx, sy
+    if dest_x < p_x then sx = 1 else sx = -1 end
+    if dest_y < p_y then sy = 1 else sy = -1 end
+
+    if dx > dy then
+        local err = math.floor(dx / 2)
+
+        while x ~= p_x do
+            if wall_grid[x][y] then wall_count = wall_count + 1 end
+
+            err = err - dy
+
+            if err < 0 then
+                y = y + sy
+                err = err + dx
+            end
+
+            x = x + sx
+        end
+    else
+        local err = math.floor(dy / 2)
+
+        while y ~= p_y do
+            if wall_grid[x][y] then wall_count = wall_count + 1 end
+
+            err = err - dx
+
+            if err < 0 then
+                x = x + sx
+                err = err + dy
+            end
+            y = y + sy
+        end
+    end
+
+    if wall_grid[x][y] then wall_count = wall_count + 1 end
+
+    return wall_count
+end
+
+
+function radiation_wall_block(player, entity, wall_grid, wall_found, damage)
+    if not wall_found then return damage end
+
+    local player_pos = settings.global[mod_name .. "Radiation-Radius"].value + 1
+
+    local start_x = math.floor(player.position.x) - settings.global[mod_name .. "Radiation-Radius"].value
+    local start_y = math.floor(player.position.y) - settings.global[mod_name .. "Radiation-Radius"].value
+
+    local x_pos = (math.floor(entity.position.x) - start_x) + 1
+    local y_pos = (math.floor(entity.position.y) - start_y) + 1
+
+    local wall_count = bresenham_wall_grid_count(wall_grid, x_pos, y_pos, player_pos, player_pos)
+
+    return math.max(damage - (wall_count * wall_resistance * damage_reduction), 0)
 end
 
 
@@ -198,16 +265,50 @@ function calculate_distance_percent(player, entity)
 end
 
 
-function calculate_entity_radiation_damage(player, entity, inv, damage)
+function calculate_entity_radiation_damage(player, entity, inv, wall_grid, wall_found, damage)
     local dist_percent = calculate_distance_percent(player, entity)
+    local calculated_damage = 0
 
     for item, value in pairs(storage.radiation_items) do
         local count = inv.get_item_count(item)
 
-        damage = damage + math.max(count * value * dist_percent, 0)
+        calculated_damage = calculated_damage + math.max(count * value * dist_percent, 0)
     end
 
-    return damage
+    return damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
+end
+
+
+function get_wall_grid(player)
+    local wall_entities = area_fetch_entities(player, {"wall"})
+    local wall_grid = {}
+
+    local radius = (settings.global[mod_name .. "Radiation-Radius"].value * 2) + 1
+
+    for i = 1, radius do
+        wall_grid[i] = {}
+
+        for j = 1, radius do
+            wall_grid[i][j] = false
+        end
+    end
+
+    local start_x = math.floor(player.position.x) - settings.global[mod_name .. "Radiation-Radius"].value
+    local start_y = math.floor(player.position.y) - settings.global[mod_name .. "Radiation-Radius"].value
+
+    local detected_wall = false
+
+    for i=1, #wall_entities do
+        local wall = wall_entities[i]
+
+        local x_pos = (math.floor(wall.position.x) - start_x) + 1
+        local y_pos = (math.floor(wall.position.y) - start_y) + 1
+
+        wall_grid[x_pos][y_pos] = true
+        detected_wall = true
+    end
+
+    return wall_grid, detected_wall
 end
 
 
@@ -235,16 +336,22 @@ function calculate_damage(player)
     }
 
     local entities = area_fetch_entities(player, entity_types)
+    local wall_grid, wall_found = get_wall_grid(player)
     local damage = 0
+    local calculated_damage = 0
 
     for i=1, #entities do
         local entity = entities[i]
 
         if belt_types[entity.type] then
-            damage = damage + belt_damage(player, entity)
+            calculated_damage = belt_damage(player, entity)
+
+            damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
 
         elseif entity.type == "resource" then
-            damage = damage + ore_patch_damage(player, entity)
+            calculated_damage = ore_patch_damage(player, entity)
+
+            damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
 
         elseif entity.type == "item-entity" then
             if entity.valid and entity.stack and entity.stack.valid_for_read then
@@ -256,7 +363,9 @@ function calculate_damage(player)
                 if value then
                     local dist_percent = calculate_distance_percent(player, entity)
 
-                    damage = damage + (count * value * dist_percent)
+                    calculated_damage = count * value * dist_percent
+
+                    damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
                 end
             end
 
@@ -278,7 +387,7 @@ function calculate_damage(player)
                 for _, define in pairs(all_defines) do
                     local inv = entity.get_inventory(define)
 
-                    if inv then damage = calculate_entity_radiation_damage(player, entity, inv, damage) end
+                    if inv then damage = calculate_entity_radiation_damage(player, entity, inv, wall_grid, wall_found, damage) end
                 end
             end
         end
@@ -286,9 +395,6 @@ function calculate_damage(player)
 
     return damage + player_inventory_damage(player)
 end
-
-
-local health_text = nil
 
 
 function radiation_funcs.player_radiation_damage(event)
@@ -319,7 +425,7 @@ function radiation_funcs.player_radiation_damage(event)
 
         if damage == 0 then goto continue end
 
-        damage = damage / 15
+        damage = damage / damage_reduction
 
         if playing_sound == 1 then
             if damage <= 50 and damage ~= 0 then

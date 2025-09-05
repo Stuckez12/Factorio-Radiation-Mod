@@ -3,6 +3,7 @@ require("prototypes.equipment.radiation_absorption_mk2")
 require("prototypes.equipment.radiation_reduction")
 require("prototypes.equipment.radiation_reduction_mk2")
 require("prototypes.equipment.radiation_suit")
+require("prototypes.entities.radiation_wall")
 
 -- Tech Research To Unlock Equipment
 data:extend({
@@ -54,6 +55,11 @@ data:extend({
             {
                 type = "unlock-recipe",
                 recipe = "radiation-suit-recipe"
+            }
+            ,
+            {
+                type = "unlock-recipe",
+                recipe = "radiation-wall-recipe"
             }
         },
         unit = {
