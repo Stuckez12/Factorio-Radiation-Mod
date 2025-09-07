@@ -1,3 +1,8 @@
+Version: 0.9.1
+Date: 07-09-2025
+    Mod Compatibility:
+        - Cery's Moon of Fulgora now supported
+---------------------------------------------------------------------------------------------------
 Version: 0.9.0
 Date: 05-09-2025
     Additions:
