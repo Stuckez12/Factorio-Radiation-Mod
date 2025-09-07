@@ -3,22 +3,18 @@ require("scripts.commands")
 
 local radiation_funcs = require("scripts.radiation_damage")
 local player_management = require("scripts.player_management")
+local mod_addons = require("scripts.mod_integrations")
 
 
 -- Global Variables
-storage.active_characters = storage.active_characters or {}
-storage.radiation_items = storage.radiation_items or {
-    ["uranium-ore"] = 1,
-    ["uranium-238"] = 2,
-    ["uranium-235"] = 5,
-    ["uranium-fuel-cell"] = 10,
-    ["depleted-uranium-fuel-cell"] = 7,
-    ["nuclear-fuel"] = 10,
-    ["uranium-rounds-magazine"] = 2,
-    ["uranium-cannon-shell"] = 3,
-    ["explosive-uranium-cannon-shell"] = 4,
-    ["atomic-bomb"] = 50
-}
+storage.active_characters = {}
+storage.radiation_items = storage.radiation_items or {}
+storage.integrated_mods = storage.integrated_mods or {}
+
+
+-- Mod Config
+script.on_init(mod_addons.integrate_mods)
+script.on_configuration_changed(mod_addons.integrate_mods)
 
 
 -- Interval damage event
