@@ -248,6 +248,81 @@ simulations.radiation_resistance = {
 }
 
 
+simulations.radiation_walls = {
+    type = "simulation-definition",
+    name = "Stuckez12-radiation-suit",
+    init = [[
+        game.simulation.camera_position = {1, 0.5}
+
+        local radiation_funcs = require("__Stuckez12_Radiation__/scripts/radiation_damage")
+        local player_management = require("__Stuckez12_Radiation__/scripts/player_management")
+
+        storage.active_characters = {}
+        storage.radiation_items = {
+            ["uranium-ore"] = 1
+        }
+
+        storage.sim_char = "hello"
+        storage.sim_dist = 12
+
+        local surface = game.surfaces[1]
+
+        surface.create_entity{
+            name = "uranium-ore",
+            amount = 1200000,
+            position = {0, 0},
+            force = "neutral"
+        }
+
+        for i = 1, 5 do
+            surface.create_entity{
+                name = "radiation-wall",
+                position = {-2, -3 + i},
+                force = "neutral"
+            }
+        end
+
+        script.on_nth_tick(20, radiation_funcs.player_radiation_damage)
+
+        script.on_nth_tick(600, function(event)
+            local surface = game.surfaces[1]
+
+            local entities = surface.find_entities_filtered{
+                type = {"character-corpse", "character"}
+            }
+
+            for _, entity in pairs(entities) do
+                if entity.valid then
+                    entity.destroy()
+                end
+            end
+
+            local character = surface.create_entity{
+                name = "character",
+                position = {-3.5, 0.5},
+                force = "neutral"
+            }
+
+            player_management.add_character_reference(character)
+
+            character.direction = defines.direction.south
+
+            local character_2 = surface.create_entity{
+                name = "character",
+                position = {4.5, 0.5},
+                force = "neutral"
+            }
+
+            player_management.add_character_reference(character_2)
+
+            character_2.direction = defines.direction.south
+
+            
+        end)
+    ]]
+}
+
+
 simulations.radiation_suit = {
     type = "simulation-definition",
     name = "Stuckez12-radiation-suit",

@@ -42,7 +42,7 @@ data:extend({
         name = "advanced-radiation-protection",
         icon = "__Stuckez12_Radiation__/graphics/icon/tech.png",
         icon_size = 128,
-        prerequisites = {"kovarex-enrichment-process", "radiation-protection", "power-armor-mk2"},
+        prerequisites = {"radiation-protection", "power-armor-mk2", "nuclear-power"},
         effects = {
             {
                 type = "unlock-recipe",

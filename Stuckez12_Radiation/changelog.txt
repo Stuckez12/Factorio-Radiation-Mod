@@ -1,3 +1,13 @@
+Version: 0.9.3
+Date: 08-09-2025
+    Additions:
+        - New tips and tricks simulation for radiation walls
+        - Added in optional dependencies for compatible mods
+    Changes:
+        - "Advanced radiation protection" research now requires "nuclear power" research instead of "kovarex enrichment" research
+    Bugfixes:
+        - Fixed mod API calls not working properly
+---------------------------------------------------------------------------------------------------
 Version: 0.9.2
 Date: 08-09-2025
     Mod Compatibility:

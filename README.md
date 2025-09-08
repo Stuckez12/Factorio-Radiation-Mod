@@ -5,10 +5,6 @@ Inspired by TibsRadiationMod
 
 
 # Development Roadmap
-## Version 0.9.3
-Test radiation remote API functionality
-Tips and tricks simulation for radiation walls
-
 ## Version 0.9.4
 Bobs mod compatibility
 
