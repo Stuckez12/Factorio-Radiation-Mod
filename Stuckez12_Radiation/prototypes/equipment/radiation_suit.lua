@@ -17,7 +17,8 @@ data:extend({
         stack_size = 1,
         equipment_grid = "medium-equipment-grid",
         inventory_size_bonus = 20,
-        infinite = true
+        infinite = true,
+        hidden = true
     },
     {
         type = "recipe",

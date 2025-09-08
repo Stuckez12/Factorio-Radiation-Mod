@@ -24,3 +24,8 @@ commands.add_command("radiation_remove_self", "Removes current character from ra
         end
     end
 end)
+
+
+commands.add_command("radiation_display_items", "Prints out all items that are currently classified as radiative", function(command)
+    game.print(serpent.block(storage.radiation_items))
+end)

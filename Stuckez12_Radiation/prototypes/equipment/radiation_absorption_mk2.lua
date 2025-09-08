@@ -7,7 +7,8 @@ data:extend({
         place_as_equipment_result = "radiation-absorption-equipment-mk2",
         subgroup = "equipment",
         order = "b[battery]-d[radiation-absorption-equipment-mk2]",
-        stack_size = 8
+        stack_size = 8,
+        hidden = true
     },
     {
         type = "battery-equipment",

@@ -1,3 +1,16 @@
+Version: 0.9.4
+Date: 08-09-2025
+    Additions:
+        - Command to display all items classified as radioactive including radioactivity value
+        - Gun turrets included in radiation damage calculations
+    Mod Compatibility:
+        - Bob's Warfare now supported
+    Changes:
+        - Removed duplicate entry of all items from the factoriopedia
+        - Added all mods to dependency list as optional
+    Bugfixes:
+        - Removed item from PlutoniumEnergy compatibility causing crash
+---------------------------------------------------------------------------------------------------
 Version: 0.9.3
 Date: 08-09-2025
     Additions:

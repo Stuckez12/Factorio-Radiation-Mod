@@ -24,7 +24,8 @@ local type_defines = {
     ["construction-robot"] = {defines.inventory.robot_cargo},
     ["logistic-robot"] = {defines.inventory.robot_cargo},
     ["locomotive"] = {defines.inventory.fuel},
-    ["cargo-wagon"] = {defines.inventory.cargo_wagon}
+    ["cargo-wagon"] = {defines.inventory.cargo_wagon},
+    ["ammo-turret"] = {defines.inventory.turret_ammo}
 }
 local belt_types = {
     ["transport-belt"] = true,
@@ -332,7 +333,8 @@ function calculate_damage(player)
         "logistic-robot",
         "locomotive",
         "cargo-wagon",
-        "inserter"
+        "inserter",
+        "ammo-turret"
     }
 
     local entities = area_fetch_entities(player, entity_types)
@@ -376,7 +378,9 @@ function calculate_damage(player)
                 if value then
                     local dist_percent = calculate_distance_percent(player, entity)
 
-                    damage = damage + (entity.held_stack.count * value * dist_percent)
+                    calculated_damage = (entity.held_stack.count * value * dist_percent)
+
+                    damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
                 end
             end
 

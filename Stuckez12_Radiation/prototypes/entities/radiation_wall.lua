@@ -35,7 +35,8 @@ data:extend({
         pick_sound = item_sounds.concrete_inventory_pickup,
         drop_sound = item_sounds.concrete_inventory_move,
         place_result = "radiation-wall",
-        stack_size = 100
+        stack_size = 100,
+        hidden = true
     },
     {
         type = "recipe",

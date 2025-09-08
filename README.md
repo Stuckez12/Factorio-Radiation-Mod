@@ -5,9 +5,6 @@ Inspired by TibsRadiationMod
 
 
 # Development Roadmap
-## Version 0.9.4
-Bobs mod compatibility
-
 ## Version 0.10
 Behemouth biters emit radiation themselves (cause they're green why else)
 - If possible, their corpses will emit radiation as well

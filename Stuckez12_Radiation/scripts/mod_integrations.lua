@@ -28,20 +28,30 @@ function PlutoniumEnergy_Compatible()
     storage.radiation_items["depleted-MOX-fuel-cell"] = 9
     storage.radiation_items["breeder-fuel-cell"] = 15
     storage.radiation_items["depleted-breeder-fuel-cell"] = 11
-    storage.radiation_items["plutonium-atomic-artillery-shell"] = 40
+    storage.radiation_items["plutonium-atomic-artillery-shell"] = 75
     storage.radiation_items["plutonium-rounds-magazine"] = 8
     storage.radiation_items["plutonium-cannon-shell"] = 7
     storage.radiation_items["explosive-plutonium-cannon-shell"] = 8
-    storage.radiation_items["plutonium-atomic-bomb"] = 75
     storage.radiation_items["plutonium-fuel"] = 14
 
     log("PlutoniumEnergy Mod - Items Added")
 end
 
 
+function Bobs_Warfare_Compatibility()
+    storage.radiation_items["bob-uranium-bullet"] = 2
+    storage.radiation_items["bob-atomic-artillery-shell"] = 60
+    storage.radiation_items["bob-shotgun-uranium-shell"] = 2
+    storage.radiation_items["bob-uranium-bullet-projectile"] = 2
+    
+    log("Bob's Warfare Mod - Items Added")
+end
+
+
 local compatible_mod_funcs = {
     ["Cerys-Moon-of-Fulgora"] = Cerys_Compatible,
-    ["PlutoniumEnergy"] = PlutoniumEnergy_Compatible
+    ["PlutoniumEnergy"] = PlutoniumEnergy_Compatible,
+    ["bobwarfare"] = Bobs_Warfare_Compatibility
 }
 
 
