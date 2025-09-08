@@ -1,3 +1,12 @@
+Version: 0.9.2
+Date: 08-09-2025
+    Mod Compatibility:
+        - PlutoniumEnergy now supported
+    Changes:
+        - Reordered radiation resistant items in crafting grid
+    Bugfixes:
+        - Fixed unknown key for radiation name
+---------------------------------------------------------------------------------------------------
 Version: 0.9.1
 Date: 07-09-2025
     Mod Compatibility:

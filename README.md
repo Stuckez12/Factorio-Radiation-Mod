@@ -5,13 +5,6 @@ Inspired by TibsRadiationMod
 
 
 # Development Roadmap
-## Version 0.9.1
-Cery's mod compatibility
-Space Age mod compatibility
-
-## Version 0.9.2
-PlutoniumEnergy mod compatibility
-
 ## Version 0.9.3
 Test radiation remote API functionality
 Tips and tricks simulation for radiation walls
