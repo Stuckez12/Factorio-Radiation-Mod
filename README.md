@@ -5,12 +5,6 @@ Inspired by TibsRadiationMod
 
 
 # Development Roadmap
-## Version 0.10
-Behemouth biters emit radiation themselves (cause they're green why else)
-- If possible, their corpses will emit radiation as well
-Add pipe contents to be included in radiation damage.
-Mainly for mods that have/want to have radioactive liquids in pipes/storage tanks
-
 ## Version 0.11
 Add in overlay of a radiation symbol. It's opacity is linked to the damage the character takes (glitch effect if possible).
 Implement MK-3 Absorption and Reduction equipment

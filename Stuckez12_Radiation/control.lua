@@ -9,7 +9,9 @@ local mod_addons = require("scripts.mod_integrations")
 -- Global Variables
 storage.active_characters = {}
 storage.radiation_items = storage.radiation_items or {}
+storage.radiation_fluids = storage.radiation_fluids or {}
 storage.integrated_mods = storage.integrated_mods or {}
+storage.biters = storage.biters or {}
 
 
 -- Mod Config
@@ -25,6 +27,7 @@ script.on_nth_tick(20, radiation_funcs.player_radiation_damage)
 script.on_event(defines.events.on_player_created, player_management.add_player)
 script.on_event(defines.events.on_player_respawned, player_management.add_player)
 script.on_event(defines.events.on_player_joined_game, player_management.add_player)
+
 
 -- Events when a player character is destroyed
 script.on_event(defines.events.on_player_died, player_management.verify_character_references)

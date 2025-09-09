@@ -110,6 +110,22 @@ function area_fetch_entities(player, entities)
 end
 
 
+function area_fetch_units(player, units)
+    local radius = settings.global[mod_name .. "Radiation-Radius"].value
+
+    if storage.sim_dist then radius = storage.sim_dist end
+
+    return player.surface.find_entities_filtered{
+        area = {
+            {math.floor(player.position.x) - radius, math.floor(player.position.y) - radius},
+            {player.position.x + radius, player.position.y + radius}
+        },
+        type = "unit",
+        name = units
+    }
+end
+
+
 function bresenham_wall_grid_count(wall_grid, dest_x, dest_y, p_x, p_y)
     local wall_count = 0;
 
@@ -231,10 +247,10 @@ function belt_damage(player, belt)
             local value = storage.radiation_items[item.name]
 
             if value then
-                local distance = utils.distance(player, belt)
+                local dist_percent = calculate_distance_percent(player, belt)
 
                 if distance <= radius then
-                    damage = damage + math.max(value * (1 - (distance / radius)) * item.count, 0)
+                    damage = damage + math.max(value * dist_percent * item.count, 0)
                 end
             end
         end
@@ -276,6 +292,8 @@ function calculate_entity_radiation_damage(player, entity, inv, wall_grid, wall_
         calculated_damage = calculated_damage + math.max(count * value * dist_percent, 0)
     end
 
+    calculated_damage = calculated_damage + get_entity_fluid_damage(player, entity)
+
     return damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
 end
 
@@ -313,6 +331,49 @@ function get_wall_grid(player)
 end
 
 
+function enemy_radiation_damage(character, unit_types)
+    local entities = area_fetch_units(character, unit_types)
+    local damage = 0
+
+    for _, enemy in pairs(entities) do
+        local value = storage.biters[enemy.name]
+
+        if value then
+            local dist_percent = calculate_distance_percent(character, enemy)
+
+            if dist_percent == 0 then return 0 end
+
+            damage = damage + (value * dist_percent)
+        end
+    end
+
+    return damage
+end
+
+
+function get_entity_fluid_damage(player, entity)
+    local damage = 0
+
+    if entity.fluidbox then
+        for i = 1, #entity.fluidbox do
+            local fluid = entity.fluidbox[i]
+                
+            if fluid then
+                local value = storage.radiation_fluids[fluid.name]
+
+                if value then 
+                    local dist_percent = calculate_distance_percent(player, entity)
+
+                    damage = damage + (value * dist_percent * fluid.amount)
+                end
+            end
+        end
+    end
+
+    return damage
+end
+
+
 function calculate_damage(player)
     local entity_types = {
         "resource",
@@ -334,9 +395,23 @@ function calculate_damage(player)
         "locomotive",
         "cargo-wagon",
         "inserter",
-        "ammo-turret"
+        "ammo-turret",
+        "corpse",
+        "pipe",
+        "storage-tank"
     }
+    local unit_types = {
+        -- Biters
+        "medium-biter",
+        "big-biter",
+        "behemoth-biter",
 
+        -- Spitters
+        "medium-spitter",
+        "big-spitter",
+        "behemoth-spitter"
+    }
+ 
     local entities = area_fetch_entities(player, entity_types)
     local wall_grid, wall_found = get_wall_grid(player)
     local damage = 0
@@ -384,6 +459,22 @@ function calculate_damage(player)
                 end
             end
 
+        elseif entity.type == "corpse" then
+            local corpse_type = storage.biters[string.gsub(entity.name, "-corpse", "")]
+
+            if corpse_type then
+                local dist_percent = calculate_distance_percent(player, entity)
+
+                calculated_damage = (corpse_type * dist_percent * 0.6)
+
+                damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
+            end
+
+        elseif entity.type == "pipe" or entity.type == "storage-tank" then
+            calculated_damage = get_entity_fluid_damage(player, entity)
+
+            damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
+
         else
             local all_defines = type_defines[entity.type]
 
@@ -396,6 +487,8 @@ function calculate_damage(player)
             end
         end
     end
+
+    damage = damage + enemy_radiation_damage(player, unit_types)
 
     return damage + player_inventory_damage(player)
 end

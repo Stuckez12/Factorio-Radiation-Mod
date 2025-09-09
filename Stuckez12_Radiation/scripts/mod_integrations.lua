@@ -15,6 +15,9 @@ function Cerys_Compatible()
     storage.radiation_items["cerys-neutron-bomb"] = 25
     storage.radiation_items["cerys-hydrogen-bomb"] = 80
 
+    -- Fluids
+    storage.radiation_fluids["mixed-oxide-waste-solution"] = 1
+
     log("Cerys Mod - Items Added")
 end
 
@@ -67,6 +70,15 @@ function mod_addons.integrate_mods()
         ["uranium-cannon-shell"] = 3,
         ["explosive-uranium-cannon-shell"] = 4,
         ["atomic-bomb"] = 50
+    }
+
+    storage.radiation_fluids = {}
+
+    storage.biters = {
+        ["big-biter"] = 10,
+        ["behemouth-biter"] = 50,
+        ["big-spitter"] = 8,
+        ["behemouth-spitter"] = 40
     }
 
     for name, version in pairs(script.active_mods) do

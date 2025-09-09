@@ -1,3 +1,16 @@
+Version: 0.10.0
+Date: 09-09-2025
+    Additions:
+        - Biters and their corpses emit radiation
+            - Behemout biters and spiters
+            - Big biters and spitters
+        - All liquids now included in radiation calculations
+        - Two commands to add/remove unit radiation values
+    Changes:
+        - Fluids in entities (e.g. assembling machines) now emit radiation
+    Bugfixes:
+        - Now made command "/add_radioactive_resource {resource_name}" accessible
+---------------------------------------------------------------------------------------------------
 Version: 0.9.4
 Date: 08-09-2025
     Additions:
