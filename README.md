@@ -11,7 +11,7 @@ Implement MK-3 Absorption and Reduction equipment
 - Absorption MK 3: Reduces radiation damage by 50 per equipment.
 - Reduction MK 3: Reduces radiation damage by 60% per equipment.
 
-# Version 1.0
+## Version 1.0
 Official release of the mod
 Adding in mod achievements in relation to radiation
 Menu Simulations showing off the new features and interactions this mod offers.

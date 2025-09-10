@@ -76,9 +76,9 @@ function mod_addons.integrate_mods()
 
     storage.biters = {
         ["big-biter"] = 10,
-        ["behemouth-biter"] = 50,
+        ["behemoth-biter"] = 50,
         ["big-spitter"] = 8,
-        ["behemouth-spitter"] = 40
+        ["behemoth-spitter"] = 40
     }
 
     for name, version in pairs(script.active_mods) do

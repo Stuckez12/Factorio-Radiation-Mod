@@ -1,8 +1,15 @@
+Version: 0.10.1
+Date: 10-09-2025
+    Additions:
+        - Tips and tricks explaining radioactive biters
+    Bugfixes:
+        - Behemoth biters/spitters did not damage player
+---------------------------------------------------------------------------------------------------
 Version: 0.10.0
 Date: 09-09-2025
     Additions:
         - Biters and their corpses emit radiation
-            - Behemout biters and spiters
+            - Behemoth biters and spiters
             - Big biters and spitters
         - All liquids now included in radiation calculations
         - Two commands to add/remove unit radiation values

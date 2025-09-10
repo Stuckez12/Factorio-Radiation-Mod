@@ -84,7 +84,21 @@ data:extend({
             type = "research",
             technology  = "advanced-radiation-protection"
         },
-        dependencies = {"Stuckez12-radiation-distance-impact", "Stuckez12-radiation-suit"},
+        dependencies = {"Stuckez12-radiation-distance-impact"},
         simulation = simulations.radiation_suit
+    },
+    {
+        type = "tips-and-tricks-item",
+        name = "Stuckez12-radiation-biters",
+        tag = "[item=uranium-ore][entity=big-biter]",
+        category = "Stuckez12-Radiation",
+        order = "g",
+        indent = 1,
+        trigger = {
+            type = "research",
+            technology  = "advanced-radiation-protection"
+        },
+        dependencies = {"Stuckez12-radiation-distance-impact"},
+        simulation = simulations.radiation_biters
     }
 })

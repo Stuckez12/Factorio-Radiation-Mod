@@ -316,8 +316,6 @@ simulations.radiation_walls = {
             player_management.add_character_reference(character_2)
 
             character_2.direction = defines.direction.south
-
-            
         end)
     ]]
 }
@@ -407,12 +405,65 @@ simulations.radiation_suit = {
 }
 
 
+simulations.radiation_biters = {
+    type = "simulation-definition",
+    name = "Stuckez12-radiation-biters",
+    init = [[
+        game.simulation.camera_position = {1, 0.5}
+
+        local radiation_funcs = require("__Stuckez12_Radiation__/scripts/radiation_damage")
+        local player_management = require("__Stuckez12_Radiation__/scripts/player_management")
+
+        storage.active_characters = {}
+        storage.radiation_items = {}
+        storage.biters = {
+            ["big-biter"] = 750
+        }
+
+        storage.sim_char = "hello"
+        storage.sim_dist = 12
+
+        local surface = game.surfaces[1]
+
+        script.on_nth_tick(20, radiation_funcs.player_radiation_damage)
+
+        script.on_nth_tick(800, function(event)
+            local surface = game.surfaces[1]
+
+            local entities = surface.find_entities_filtered{
+                type = {"character-corpse", "character", "unit", "wall"}
+            }
+
+            for _, entity in pairs(entities) do
+                if entity.valid then
+                    entity.destroy()
+                end
+            end
+
+            surface.create_entities_from_blueprint_string
+            {
+                string = "0eNqV1c1ugzAMB/B38TmtSMgHyatUU0W3aIoEoQK6rUJ59wI77DCsxEci/JOtWP8scOse/j6GOINbILwPcQJ3WWAKn7HttrPY9h4cTPMQ/em77TpIDEL88D/geHpj4OMc5uB/6/aP5zU++psf1x/YQT2D+zCtJUPc/I2RZ8XgCe7ExVmlxP45osxROacuc3TOkWWOyTmqzGlyji5zbM4xRY6ock5Dvffq2LFUhx87vKIOhjTEORXCOhLE0RrEqYmORRxJHAzrRxEdrB9NnEsjjiFGB+ZQV9ogjiVGENKPqIgRhDmcGEGYI4gRhDk1cX8wh7rP+32tz1mYfb8W/b2LDL78OO0lSgsrrVXGSK0bm9ILmXBPHw==",
+                position = {4, 0}
+            }
+
+            local character = surface.create_entity{
+                name = "character",
+                position = {-2.5, 0.5},
+                force = "neutral"
+            }
+
+            character.direction = defines.direction.south
+
+            player_management.add_character_reference(character)
+
+            local character = surface.create_entity{
+                name = "big-biter",
+                position = {3.5, 0.5},
+                force = "neutral"
+            }
+        end)
+    ]]
+}
+
 
 return simulations
-
-
-
-
-
-
-
