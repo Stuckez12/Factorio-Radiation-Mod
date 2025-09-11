@@ -1,3 +1,10 @@
+Version: 0.10.2
+Date: 11-09-2025
+    Additions:
+        - Small tag displaying radiation values for every radiative item/fluid/etc...
+    Changes:
+        - Internal logic on how items are added to radiative lists
+---------------------------------------------------------------------------------------------------
 Version: 0.10.1
 Date: 10-09-2025
     Additions:
