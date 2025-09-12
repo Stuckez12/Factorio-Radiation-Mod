@@ -323,8 +323,10 @@ function get_wall_grid(player)
         local x_pos = (math.floor(wall.position.x) - start_x) + 1
         local y_pos = (math.floor(wall.position.y) - start_y) + 1
 
-        wall_grid[x_pos][y_pos] = true
-        detected_wall = true
+        if wall.name == "radiation-wall" then
+            wall_grid[x_pos][y_pos] = true
+            detected_wall = true
+        end
     end
 
     return wall_grid, detected_wall

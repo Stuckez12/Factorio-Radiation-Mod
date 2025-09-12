@@ -1,3 +1,8 @@
+Version: 0.10.4
+Date: 12-09-2025
+    Bugfixes:
+        - Filtered out walls so only radiation walls resist radiation
+---------------------------------------------------------------------------------------------------
 Version: 0.10.3
 Date: 12-09-2025
     Bugfixes:
