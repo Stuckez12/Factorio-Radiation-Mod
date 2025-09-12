@@ -249,7 +249,7 @@ function belt_damage(player, belt)
             if value then
                 local dist_percent = calculate_distance_percent(player, belt)
 
-                if distance <= radius then
+                if dist_percent <= radius then
                     damage = damage + math.max(value * dist_percent * item.count, 0)
                 end
             end
@@ -542,6 +542,45 @@ function radiation_funcs.player_radiation_damage(event)
         ::continue::
 
         if playing_sound >= 2 then playing_sound = 0 end
+
+        -- local player = nil
+
+        -- for _, p in pairs(game.connected_players) do
+        --     if p.valid and p.character == character then player = p end
+        -- end
+
+        -- local screen_flow = player.gui.screen
+
+        -- if screen_flow.red_tint then
+        --     screen_flow.red_tint.destroy()
+        -- end
+
+        -- -- Create a full-screen red frame
+        -- local red_overlay = screen_flow.add{
+        --     type = "flow",
+        --     name = "red_tint",
+        --     direction = "vertical"
+        -- }
+        -- red_overlay.style.left_padding = 0
+        -- red_overlay.style.right_padding = 0
+        -- red_overlay.style.top_padding = 0
+        -- red_overlay.style.bottom_padding = 0
+        -- red_overlay.style.width = player.display_resolution.width
+        -- red_overlay.style.height = player.display_resolution.height
+        -- red_overlay.style.horizontal_align = "center"
+        -- red_overlay.style.vertical_align = "center"
+
+        -- red_overlay.add{
+        --     type = "sprite",
+        --     sprite = "radiation-screen-icon",  -- replace with your sprite path
+        --     name = "center_sprite"
+        -- }
+
+        -- red_overlay.add{
+        --     type = "sprite",
+        --     sprite = "utility.warning_icon",
+        --     name = "center_sprite2"
+        -- }
     end
 end
 

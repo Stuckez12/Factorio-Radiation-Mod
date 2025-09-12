@@ -1,3 +1,8 @@
+Version: 0.10.3
+Date: 12-09-2025
+    Bugfixes:
+        - Fixed crash when trying to detect items on a belt
+---------------------------------------------------------------------------------------------------
 Version: 0.10.2
 Date: 11-09-2025
     Additions:

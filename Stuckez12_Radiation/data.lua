@@ -44,3 +44,13 @@ data:extend({
         name = "Stuckez12-radiation"
     }
 })
+
+data:extend({
+    {
+        type = "sprite",
+        name = "radiation-screen-icon",           -- unique name
+        filename = "__Stuckez12_Radiation__/graphics/screen_effect/radiation_logos/original_logo_2.png",
+        width = 384,                 -- width in pixels
+        height = 384,                -- height in pixels
+    }
+})
