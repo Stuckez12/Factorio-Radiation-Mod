@@ -8,6 +8,7 @@ local mod_addons = require("scripts.mod_integrations")
 
 -- Global Variables
 storage.active_characters = {}
+storage.player_connections = {}
 storage.radiation_items = storage.radiation_items or {}
 storage.radiation_fluids = storage.radiation_fluids or {}
 storage.integrated_mods = storage.integrated_mods or {}
@@ -21,6 +22,7 @@ script.on_configuration_changed(mod_addons.integrate_mods)
 
 -- Interval damage event
 script.on_nth_tick(20, radiation_funcs.player_radiation_damage)
+script.on_nth_tick(4, radiation_funcs.update_gui_logo)
 
 
 -- Events when a player character is created

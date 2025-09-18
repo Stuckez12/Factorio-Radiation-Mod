@@ -3,6 +3,7 @@ local radiation_funcs = {}
 -- Import all files
 local utils = require("scripts.utils")
 local player_management = require("scripts.player_management")
+local gui_overlay = require("scripts.gui_overlay")
 
 -- Local variables
 local crafter_defines = {
@@ -404,12 +405,10 @@ function calculate_damage(player)
     }
     local unit_types = {
         -- Biters
-        "medium-biter",
         "big-biter",
         "behemoth-biter",
 
         -- Spitters
-        "medium-spitter",
         "big-spitter",
         "behemoth-spitter"
     }
@@ -508,6 +507,8 @@ function radiation_funcs.player_radiation_damage(event)
     end
 
     for _, character in pairs(storage.active_characters) do
+        local saved_damage = 0
+
         if not (character.valid and character.surface) then goto continue end
 
         damage = calculate_damage(character)
@@ -536,6 +537,8 @@ function radiation_funcs.player_radiation_damage(event)
             end
         end
 
+        saved_damage = damage
+
         -- Equipment resistances
         damage = damage_resistances(character, damage)
 
@@ -543,46 +546,89 @@ function radiation_funcs.player_radiation_damage(event)
 
         ::continue::
 
+        update_damage_records(character, saved_damage)
+
         if playing_sound >= 2 then playing_sound = 0 end
+    end
+end
 
-        -- local player = nil
 
-        -- for _, p in pairs(game.connected_players) do
-        --     if p.valid and p.character == character then player = p end
-        -- end
+function add_character(character, player)
+    storage.player_connections[character] = {
+        player = player,
+        last_damage = 0,
+        -- Add other variables regarding the gui overlay
+    }
+end
 
-        -- local screen_flow = player.gui.screen
 
-        -- if screen_flow.red_tint then
-        --     screen_flow.red_tint.destroy()
-        -- end
+function radiation_funcs.relink_characters_to_players()
+    local player_list = {}
 
-        -- -- Create a full-screen red frame
-        -- local red_overlay = screen_flow.add{
-        --     type = "flow",
-        --     name = "red_tint",
-        --     direction = "vertical"
-        -- }
-        -- red_overlay.style.left_padding = 0
-        -- red_overlay.style.right_padding = 0
-        -- red_overlay.style.top_padding = 0
-        -- red_overlay.style.bottom_padding = 0
-        -- red_overlay.style.width = player.display_resolution.width
-        -- red_overlay.style.height = player.display_resolution.height
-        -- red_overlay.style.horizontal_align = "center"
-        -- red_overlay.style.vertical_align = "center"
+    for _, player in pairs(game.players) do
+        if player and player.valid then table.insert(player_list, player) end
+    end
 
-        -- red_overlay.add{
-        --     type = "sprite",
-        --     sprite = "radiation-screen-icon",  -- replace with your sprite path
-        --     name = "center_sprite"
-        -- }
+    storage.player_connections = {}
 
-        -- red_overlay.add{
-        --     type = "sprite",
-        --     sprite = "utility.warning_icon",
-        --     name = "center_sprite2"
-        -- }
+    for _, character in pairs(storage.active_characters) do
+        local remove_player = nil
+
+        for _, player in pairs(player_list) do
+            if player.character == character then
+                add_character(character, player)
+                remove_player = player
+
+                break
+            end
+        end
+
+        player_list[remove_player] = nil
+    end
+end
+
+
+function radiation_funcs.link_character(character)
+    local player_list = {}
+
+    for _, player in pairs(game.players) do
+        if player and player.valid then table.insert(player_list, player) end
+    end
+
+    for _, player in pairs(player_list) do
+        if player.character == character then
+            add_character(character, player)
+
+            break
+        end
+    end
+end
+
+
+function update_damage_records(character, damage)
+    if storage.player_connections[character] then
+        storage.player_connections[character].last_damage = damage
+
+    else
+        radiation_funcs.link_character(character)
+
+        local player = storage.player_connections[character].player
+
+        storage.player_connections[character].last_damage = damage
+
+        gui_overlay.create_radiation_display(player)
+    end
+end
+
+
+function radiation_funcs.update_gui_logo()
+    for _, character in pairs(storage.player_connections) do
+        local player = character.player
+        local damage = character.last_damage
+
+        if not damage then damage = 0 end
+
+        gui_overlay.update_sprite_overlay(player, damage)
     end
 end
 

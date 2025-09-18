@@ -16,5 +16,11 @@ data:extend({
         default_value = 50,
         minimum_value = 0,
         maximum_value = 125
+    },
+    {
+        type = "bool-setting",
+        name = mod_name .. "Enable-GUI-Effect",
+        setting_type = "runtime-per-user",
+        default_value = true
     }
 })

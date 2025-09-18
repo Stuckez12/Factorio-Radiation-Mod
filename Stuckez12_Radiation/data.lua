@@ -45,12 +45,53 @@ data:extend({
     }
 })
 
+
+
+
+
+local gui_logo = {
+    {
+        name = "GUILowRadiation",
+        dir = "__Stuckez12_Radiation__/graphics/screen_effect/low_radiation",
+        count = 10
+    },
+    {
+        name = "GUIMediumRadiation",
+        dir = "__Stuckez12_Radiation__/graphics/screen_effect/medium_radiation",
+        count = 10
+    },
+    {
+        name = "GUIHighRadiation",
+        dir = "__Stuckez12_Radiation__/graphics/screen_effect/high_radiation",
+        count = 10
+    }
+}
+
+for _, gui in pairs(gui_logo) do
+    local sprites = {}
+    local name = gui.name
+    local dir = gui.dir
+
+    for i = 1, gui.count do
+        table.insert(sprites, {
+            type = "sprite",
+            name = name .. tostring(i),
+            filename = dir .. "/radiation_logo_" .. tostring(i) .. ".png",
+            width = 384,
+            height = 384
+        })
+    end
+
+    data:extend(sprites)
+end
+
+
 data:extend({
     {
         type = "sprite",
-        name = "radiation-screen-icon",           -- unique name
-        filename = "__Stuckez12_Radiation__/graphics/screen_effect/radiation_logos/original_logo_2.png",
-        width = 384,                 -- width in pixels
-        height = 384,                -- height in pixels
+        name = "no_sprite",
+        filename = "__Stuckez12_Radiation__/graphics/screen_effect/no_sprite.png",
+        width = 32,
+        height = 32
     }
 })
