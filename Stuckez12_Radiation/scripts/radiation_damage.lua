@@ -513,7 +513,10 @@ function radiation_funcs.player_radiation_damage(event)
     for _, character in pairs(storage.active_characters) do
         local saved_damage = 0
 
-        if not (character.valid and character.surface) then goto continue end
+        if not (character.valid and character.surface) then
+            player_management.remove_character_reference(character)
+            goto skip
+        end
 
         damage = calculate_damage(character)
 
@@ -553,6 +556,8 @@ function radiation_funcs.player_radiation_damage(event)
         if not storage.sim_char then -- Skip when in simulation
             update_damage_records(character, saved_damage)
         end
+
+        ::skip::
 
         if playing_sound >= 2 then playing_sound = 0 end
     end
