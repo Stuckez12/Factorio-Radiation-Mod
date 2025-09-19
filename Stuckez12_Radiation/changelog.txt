@@ -1,3 +1,22 @@
+Version: 0.11.1
+Date: 19-09-2025
+    Additions:
+        - MK3 equipment for both Reduction and Absorption pieces
+            - Reduction MK3: 60% radiation damage reduction
+            - Absorption MK3: 50 radiation damage absorbed
+        - Final technology research for radiation protection
+    Changes:
+        - Changed MK2 equipment to use efficiency module 2's (removed iron plate)
+        - Moved radiation suit to near total radiation protection technology
+        - Changed technology advanced radiation protection science consumption 30s -> 45s
+        - Modified the volume of Medium/High radiation damage
+        - Modified technology names
+        - Swapped tips and tricks ordering/triggers
+    Bugfixes:
+        - Fixed unknown key for player setting "Enable GUI Effects"
+        - Potential fix to instant crash regarding visuals
+        - Fixed tips and tricks simulation's crashing
+---------------------------------------------------------------------------------------------------
 Version: 0.11.0
 Date: 18-09-2025
     Additions:
@@ -134,8 +153,8 @@ Version: 0.6.0
 Date: 30-08-2025
     Additions:
         - MK2 equipment for both Reduction and Absorption pieces
-            - Reduction Mk2: 40% Radiation Damage Reduction
-            - Absorption Mk2: 20 radiation damage absorbed
+            - Reduction MK2: 40% radiation damage reduction
+            - Absorption MK2: 20 radiation damage absorbed
     Changes:
         - Buffed Reduction MK1 from 5% to 20%
 ---------------------------------------------------------------------------------------------------

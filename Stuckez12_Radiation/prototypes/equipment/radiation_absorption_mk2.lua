@@ -39,8 +39,8 @@ data:extend({
         energy_required = 20,
         ingredients = {
             {type = "item", name = "radiation-absorption-equipment", amount = 2},
+            {type = "item", name = "efficiency-module-2", amount = 4},
             {type = "item", name = "steel-plate", amount = 80},
-            {type = "item", name = "iron-plate", amount = 30},
             {type = "item", name = "copper-plate", amount = 30},
         },
         results = {

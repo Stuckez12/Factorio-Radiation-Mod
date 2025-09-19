@@ -64,31 +64,35 @@ function damage_resistances(player, damage)
     local absorber_count = 0
     local reducer_count = 0
     local reducer_count_mk2 = 0
+    local reducer_count_mk3 = 0
 
     for _, entry in ipairs(contents) do
         if entry.name == "radiation-absorption-equipment" then
             absorber_count = absorber_count + entry.count
         elseif entry.name == "radiation-absorption-equipment-mk2" then
-            absorber_count = absorber_count + entry.count + entry.count
+            absorber_count = absorber_count + (entry.count * 2)
+        elseif entry.name == "radiation-absorption-equipment-mk3" then
+            absorber_count = absorber_count + (entry.count * 5)
         end
 
         if entry.name == "radiation-reduction-equipment" then
             reducer_count = reducer_count + entry.count
         elseif entry.name == "radiation-reduction-equipment-mk2" then
             reducer_count_mk2 = entry.count
+        elseif entry.name == "radiation-reduction-equipment-mk3" then
+            reducer_count_mk3 = entry.count
         end
     end
 
+    for i = 1, reducer_count_mk3 do damage = math.max(0, damage * 0.4) end
     for i = 1, reducer_count_mk2 do damage = math.max(0, damage * 0.6) end
     for i = 1, reducer_count do damage = math.max(0, damage * 0.8) end
 
-    damage = math.max(0, damage - (absorber_count * 10))
-
-    return damage
+    return math.max(0, damage - (absorber_count * 10))
 end
 
 
-function play_sound(sound_name, volume, in_sim)
+function play_sound(sound_name, volume)
     game.play_sound{
         path = sound_name,
         volume_modifier = volume
@@ -531,9 +535,9 @@ function radiation_funcs.player_radiation_damage(event)
             if damage <= 50 and damage ~= 0 then
                 play_sound("LowRadiation", 0.2)
             elseif damage <= 250 then
-                play_sound("MediumRadiation", 0.4)
+                play_sound("MediumRadiation", 0.6)
             elseif damage > 250 then
-                play_sound("HighRadiation", 0.6)
+                play_sound("HighRadiation", 1)
             end
         end
 
@@ -546,7 +550,9 @@ function radiation_funcs.player_radiation_damage(event)
 
         ::continue::
 
-        update_damage_records(character, saved_damage)
+        if not storage.sim_char then -- Skip when in simulation
+            update_damage_records(character, saved_damage)
+        end
 
         if playing_sound >= 2 then playing_sound = 0 end
     end
@@ -622,6 +628,8 @@ end
 
 
 function radiation_funcs.update_gui_logo()
+    if not storage.player_connections then return end
+
     for _, character in pairs(storage.player_connections) do
         local player = character.player
         local damage = character.last_damage

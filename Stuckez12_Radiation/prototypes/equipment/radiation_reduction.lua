@@ -6,7 +6,7 @@ data:extend({
         icon_size = 128,
         place_as_equipment_result = "radiation-reduction-equipment",
         subgroup = "equipment",
-        order = "b[battery]-e[radiation-reduction-equipment]",
+        order = "b[battery]-f[radiation-reduction-equipment]",
         stack_size = 8,
         hidden = true
     },

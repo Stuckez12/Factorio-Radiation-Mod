@@ -6,7 +6,7 @@ data:extend({
         icon_size = 128,
         place_as_equipment_result = "radiation-reduction-equipment-mk2",
         subgroup = "equipment",
-        order = "b[battery]-f[radiation-reduction-equipment-mk2]",
+        order = "b[battery]-g[radiation-reduction-equipment-mk2]",
         stack_size = 8,
         hidden = true
     },
@@ -39,9 +39,9 @@ data:extend({
         energy_required = 20,
         ingredients = {
             {type = "item", name = "radiation-reduction-equipment", amount = 2},
+            {type = "item", name = "efficiency-module-2", amount = 4},
             {type = "item", name = "steel-plate", amount = 180},
-            {type = "item", name = "iron-plate", amount = 100},
-            {type = "item", name = "copper-plate", amount = 60},
+            {type = "item", name = "copper-plate", amount = 100},
         },
         results = {
             { type = "item", name = "radiation-reduction-equipment-mk2", amount = 1 }

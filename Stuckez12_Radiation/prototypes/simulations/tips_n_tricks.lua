@@ -75,8 +75,8 @@ data:extend({
     },
     {
         type = "tips-and-tricks-item",
-        name = "Stuckez12-radiation-suit",
-        tag = "[item=uranium-ore][item=radiation-suit]",
+        name = "Stuckez12-radiation-biters",
+        tag = "[item=uranium-ore][entity=big-biter]",
         category = "Stuckez12-Radiation",
         order = "f",
         indent = 1,
@@ -85,20 +85,20 @@ data:extend({
             technology  = "advanced-radiation-protection"
         },
         dependencies = {"Stuckez12-radiation-distance-impact"},
-        simulation = simulations.radiation_suit
+        simulation = simulations.radiation_biters
     },
     {
         type = "tips-and-tricks-item",
-        name = "Stuckez12-radiation-biters",
-        tag = "[item=uranium-ore][entity=big-biter]",
+        name = "Stuckez12-radiation-suit",
+        tag = "[item=uranium-ore][item=radiation-suit]",
         category = "Stuckez12-Radiation",
         order = "g",
         indent = 1,
         trigger = {
             type = "research",
-            technology  = "advanced-radiation-protection"
+            technology  = "near-total-radiation-protection"
         },
-        dependencies = {"Stuckez12-radiation-distance-impact"},
-        simulation = simulations.radiation_biters
+        dependencies = {"Stuckez12-radiation-biters"},
+        simulation = simulations.radiation_suit
     }
 })
