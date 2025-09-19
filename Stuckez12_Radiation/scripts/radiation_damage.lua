@@ -617,6 +617,8 @@ end
 
 
 function update_damage_records(character, damage)
+    if not storage.player_connections then storage.player_connections = {} end
+
     if storage.player_connections[character] then
         storage.player_connections[character].last_damage = damage
 
