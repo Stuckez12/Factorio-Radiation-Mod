@@ -30,6 +30,15 @@ function add_label_to_item(list)
 end
 
 
+-- Data compatibility
+for name, _ in pairs(mods) do
+    if mod_addons.data_compatible_mod_funcs[name] then
+        mod_addons.data_compatible_mod_funcs[name]()
+    end
+end
+
+
+-- Item Label Compatibility
 for name, _ in pairs(mods) do
     if mod_addons.compatible_mod_funcs[name] then
         local mod_data = mod_addons.compatible_mod_funcs[name]()

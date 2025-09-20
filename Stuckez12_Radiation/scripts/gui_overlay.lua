@@ -17,6 +17,8 @@ function gui_overlay.create_radiation_display(player)
         add_overlay.style.bottom_padding = 0
         add_overlay.style.width = player.display_resolution.width
         add_overlay.style.height = player.display_resolution.height
+        add_overlay.style.horizontally_stretchable = true
+        add_overlay.style.vertically_stretchable = true
         add_overlay.style.horizontal_align = "center"
         add_overlay.style.vertical_align = "center"
     end

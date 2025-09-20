@@ -1,6 +1,6 @@
 {
     "name": "Stuckez12_Radiation",
-    "version": "0.11.2",
+    "version": "0.11.3",
     "title": "Stuckez12 Radiation",
     "description": "A simple world environment addon that includes radiation as a new hazard. Inspired by TibsRadiationMod",
     "author": "Stuckez12",
@@ -9,6 +9,7 @@
         "base >= 2.0.60",
         "? Cerys-Moon-of-Fulgora",
         "? PlutoniumEnergy",
-        "? bobwarfare"
+        "? bobwarfare",
+        "? bztitanium"
     ]
 }

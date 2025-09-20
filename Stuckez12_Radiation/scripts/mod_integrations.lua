@@ -103,6 +103,27 @@ mod_addons.compatible_mod_funcs = {
 }
 
 
+function BZ_Titanium_Data_Compatibility()
+    local tech = data.raw.technology["radiation-protection"]
+
+    for i, prereq in ipairs(tech.prerequisites) do
+        if prereq == "uranium-mining" then
+            tech.prerequisites[i] = "fluid-mining"
+            break
+        end
+    end
+
+    local tip_change = data.raw["tips-and-tricks-item"]["Stuckez12-radiation-entity-list"]
+
+    tip_change.trigger.technology = "fluid-mining"
+end
+
+
+mod_addons.data_compatible_mod_funcs = {
+    ["bztitanium"] = BZ_Titanium_Data_Compatibility
+}
+
+
 function mod_addons.integrate_mods()
     storage.radiation_items = {}
     storage.radiation_fluids = {}
