@@ -1,35 +1,25 @@
 local gui_overlay = {}
 
 
-function gui_overlay.create_radiation_display(player)
+function create_radiation_display(player)
     local screen_flow = player.gui.screen
 
-    if not screen_flow.overlay then
-        local add_overlay = screen_flow.add{
-            type = "flow",
-            name = "overlay",
-            direction = "vertical"
-        }
-
-        add_overlay.style.left_padding = 0
-        add_overlay.style.right_padding = 0
-        add_overlay.style.top_padding = 0
-        add_overlay.style.bottom_padding = 0
-        add_overlay.style.width = player.display_resolution.width
-        add_overlay.style.height = player.display_resolution.height
-        add_overlay.style.horizontally_stretchable = true
-        add_overlay.style.vertically_stretchable = true
-        add_overlay.style.horizontal_align = "center"
-        add_overlay.style.vertical_align = "center"
-    end
-
-    if not screen_flow.overlay.logo then
-        local add_overlay = screen_flow.overlay.add{
+    if not screen_flow.radiation_logo then
+        local logo = screen_flow.add{
             type = "sprite",
-            name = "logo",
+            name = "radiation_logo",
             sprite = "no_sprite",
             color = {r = 1, g = 0, b = 0, a = 0.5},
             ignored_by_interaction = true
+        }
+
+        local res = player.display_resolution
+        local scale = player.display_scale
+        local sprite_size = 384  -- replace with actual sprite size in px
+
+        logo.location = {
+            (res.width / scale - sprite_size) / 2,
+            (res.height / scale - sprite_size) / 2
         }
     end
 end
@@ -38,11 +28,11 @@ end
 function gui_overlay.update_sprite_overlay(player, damage)
     local screen_flow = player.gui.screen
 
-    if not screen_flow.overlay or not screen_flow.overlay.logo then
+    if not screen_flow.radiation_logo then
         create_radiation_display(player)
     end
 
-    local sprite = screen_flow.overlay.logo
+    local sprite = screen_flow.radiation_logo
     local index = tostring(math.random(1,10))
     local image = "no_sprite"
 
