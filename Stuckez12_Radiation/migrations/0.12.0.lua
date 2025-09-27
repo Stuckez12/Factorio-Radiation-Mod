@@ -1,0 +1,1 @@
+-- storage.scan_world = true

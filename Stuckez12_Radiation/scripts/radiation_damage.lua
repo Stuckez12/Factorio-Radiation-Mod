@@ -387,8 +387,8 @@ function calculate_damage(player)
         "transport-belt",
         "underground-belt",
         "splitter",
-        "container",
-        "logistic-container",
+        "container",            -- Replace With Chunk Searching
+        "logistic-container",   -- Replace With Chunk Searching
         "character-corpse",
         "assembling-machine",
         "rocket-silo",
@@ -568,9 +568,29 @@ function add_character(character, player)
     storage.player_connections[character] = {
         player = player,
         last_damage = 0,
-        -- Add other variables regarding the gui overlay
+    --     conistent_damage = 0,
+    --     chunk = {
+    --         x = math.floor(player.position.x / 32)
+    --         y = math.floor(player.position.y / 32)
+    --     },
+    --     radiated_chunks = {}
     }
 end
+
+
+-- function radiation_funcs.update_character_pos(event)
+--     local record = storage.player_connections[event.player.character]
+
+--     if not record then return end
+
+--     local xpos = math.floor(player.position.x / 32)
+--     local ypos = math.floor(player.position.y / 32)
+
+--     -- If player hasnt moved chunks then return
+--     if record.chunk.x == xpos and record.chunk.y == ypos then return end
+
+    
+-- end
 
 
 function radiation_funcs.relink_characters_to_players()

@@ -8,10 +8,10 @@ for _, player in pairs(game.players) do
     local res = player.display_resolution
     local sprite_size = 384
 
-    screen_flow.radiation_logo.location = {
-        (res.width - sprite_size) / 2,
-        (res.height - sprite_size) / 2
-    }
+    if screen_flow.radiation_logo then
+        screen_flow.radiation_logo.location = {
+            (res.width - sprite_size) / 2,
+            (res.height - sprite_size) / 2
+        }
+    end
 end
-
-
