@@ -1,3 +1,8 @@
+Version: 0.11.5
+Date: 27-09-2025
+    Bugfixes:
+        - Renamed migration file meant for 0.11.4 to proper naming convention (0.11.4 should now be fully applied)
+---------------------------------------------------------------------------------------------------
 Version: 0.11.4
 Date: 27-09-2025
     Bugfixes:

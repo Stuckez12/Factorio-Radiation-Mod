@@ -1,7 +1,7 @@
 local gui_overlay = {}
 
 
-function create_radiation_display(player)
+function gui_overlay.create_radiation_display(player)
     local screen_flow = player.gui.screen
 
     if not screen_flow.radiation_logo then
@@ -14,12 +14,11 @@ function create_radiation_display(player)
         }
 
         local res = player.display_resolution
-        local scale = player.display_scale
         local sprite_size = 384  -- replace with actual sprite size in px
 
         logo.location = {
-            (res.width / scale - sprite_size) / 2,
-            (res.height / scale - sprite_size) / 2
+            (res.width - sprite_size) / 2,
+            (res.height - sprite_size) / 2
         }
     end
 end
