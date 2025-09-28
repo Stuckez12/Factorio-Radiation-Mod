@@ -1,5 +1,12 @@
 Version: 0.11.6
 Date: 28-09-2025
+    Additions:
+        - All chests distance calculations are now based on chunk distance instead of tile distance
+    Changes:
+        - (Logistic) Containers have been removed from nearby radiation calculations
+---------------------------------------------------------------------------------------------------
+Version: 0.11.6
+Date: 28-09-2025
     Bugfixes:
         - Fixed crash when loading into any save
 ---------------------------------------------------------------------------------------------------

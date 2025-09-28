@@ -4,6 +4,7 @@ local radiation_funcs = {}
 local utils = require("scripts.utils")
 local player_management = require("scripts.player_management")
 local gui_overlay = require("scripts.gui_overlay")
+local chunk_func = require("scripts.chunk_func")
 
 -- Local variables
 local crafter_defines = {
@@ -14,7 +15,7 @@ local crafter_defines = {
 }
 local type_defines = {
     ["container"] = {defines.inventory.chest},
-    ["logistic-container"] = {defines.inventory.chest, defines.inventory.logistic_container_trash},
+    ["logistic-container"] = {defines.inventory.chest},
     ["character-corpse"] = {defines.inventory.chest},
     ["assembling-machine"] = crafter_defines,
     ["rocket-silo"] = crafter_defines,
@@ -387,8 +388,6 @@ function calculate_damage(player)
         "transport-belt",
         "underground-belt",
         "splitter",
-        "container",            -- Replace With Chunk Searching
-        "logistic-container",   -- Replace With Chunk Searching
         "character-corpse",
         "assembling-machine",
         "rocket-silo",
@@ -438,14 +437,13 @@ function calculate_damage(player)
         elseif entity.type == "item-entity" then
             if entity.valid and entity.stack and entity.stack.valid_for_read then
                 local item_name = entity.stack.name
-                local count = entity.stack.count
 
                 local value = storage.radiation_items[item_name]
 
                 if value then
                     local dist_percent = calculate_distance_percent(player, entity)
 
-                    calculated_damage = count * value * dist_percent
+                    calculated_damage = value * dist_percent
 
                     damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
                 end
@@ -510,6 +508,12 @@ function radiation_funcs.player_radiation_damage(event)
         player_management.add_all_player_references()
     end
 
+    storage.chunk_update_limit = storage.chunk_update_limit or {
+        max = 12,
+        current = 0
+    }
+    storage.chunk_update_limit.current = 0
+
     for _, character in pairs(storage.active_characters) do
         local saved_damage = 0
 
@@ -520,6 +524,13 @@ function radiation_funcs.player_radiation_damage(event)
 
         damage = calculate_damage(character)
 
+        -- New container damage logic (chunk distance)
+        if storage.player_connections and storage.player_connections[character] then
+            chunk_func.update_concurrent_damage(character)
+
+            damage = damage + storage.player_connections[character].concurrent_damage
+        end
+
         if damage == 0 then goto continue end
 
         playing_sound = playing_sound + 1
@@ -527,7 +538,7 @@ function radiation_funcs.player_radiation_damage(event)
         -- Prevent immediate spawn kill by radiation
         -- by dedicating the world center as radiation free
         if not storage.sim_char then -- Skip when in simulation
-            damage = prevent_spawn_death(character, damage)
+            -- damage = prevent_spawn_death(character, damage)
         end
 
         if damage == 0 then goto continue end
@@ -568,7 +579,7 @@ function add_character(character, player)
     storage.player_connections[character] = {
         player = player,
         last_damage = 0,
-        conistent_damage = 0,
+        concurrent_damage = 0,
         chunk = {
             x = math.floor(player.position.x / 32),
             y = math.floor(player.position.y / 32)
@@ -579,7 +590,8 @@ end
 
 
 function radiation_funcs.update_character_pos(event)
-    local record = storage.player_connections[event.player.character]
+    local player = game.get_player(event.player_index)
+    local record = storage.player_connections[player.character]
 
     if not record then return end
 
@@ -589,7 +601,7 @@ function radiation_funcs.update_character_pos(event)
     -- If player hasnt moved chunks then return
     if record.chunk.x == xpos and record.chunk.y == ypos then return end
 
-    
+    return
 end
 
 

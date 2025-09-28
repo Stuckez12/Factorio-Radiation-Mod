@@ -22,5 +22,13 @@ data:extend({
         name = mod_name .. "Enable-GUI-Effect",
         setting_type = "runtime-per-user",
         default_value = true
+    },
+    {
+        type = "int-setting",
+        name = mod_name .. "Chunk-Effect-Radius",
+        setting_type = "runtime-global",
+        default_value = 8,
+        minimum_value = 4,
+        maximum_value = 12
     }
 })

@@ -1,5 +1,6 @@
 local player_management = require("scripts.player_management")
 local mod_addons = require("scripts.mod_integrations")
+local chunk_func = require("scripts.chunk_func")
 
 commands.add_command("radiation_add_self", "Add current character to radiation damage list", function(command)
     if command.player_index then
@@ -50,4 +51,22 @@ end)
 commands.add_command("radiation_refresh", "Refreshes radiation list", function(command)
     mod_addons.integrate_mods()
     game.print("Stuckez12 Radiation: Radiation item list refreshed")
+    log("Radiation item list refreshed")
+end)
+
+
+commands.add_command("chest_migrate", "Add all chests to storage", function(command)
+    storage.chunk_data = {}
+
+    for name, surface in pairs(game.surfaces) do
+        local all_chests = surface.find_entities_filtered{type = {"container", "logistic-container"}}
+
+        for _, chest in pairs(all_chests) do
+            chunk_func.add_chest(surface.index, math.floor(chest.position.x / 32), math.floor(chest.position.y / 32), chest)
+            chunk_func.update_chunk_data(surface.index, math.floor(chest.position.x / 32), math.floor(chest.position.y / 32))
+        end
+    end
+
+    game.print("Stuckez12 Radiation: Added all chests to memory")
+    log("Adding all chests to feature memory")
 end)

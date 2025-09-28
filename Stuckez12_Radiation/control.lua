@@ -8,13 +8,17 @@ local chunk_func = require("scripts.chunk_func")
 
 
 -- Global Variables
-storage.active_characters = {}
-storage.player_connections = {}
+storage.active_characters = storage.active_characters or {}
+storage.player_connections = storage.player_connections or {}
 storage.radiation_items = storage.radiation_items or {}
 storage.radiation_fluids = storage.radiation_fluids or {}
 storage.integrated_mods = storage.integrated_mods or {}
 storage.chunk_data = storage.chunk_data or {}
 storage.biters = storage.biters or {}
+storage.chunk_update_limit = storage.chunk_update_limit or {
+    max = 12,
+    current = 0
+}
 
 
 -- Mod Config
@@ -38,4 +42,20 @@ script.on_event(defines.events.on_player_died, player_management.verify_characte
 
 
 -- Other player events
--- script.on_event(defines.events.on_player_changed_position, radiation_funcs.update_character_pos)
+script.on_event(defines.events.on_player_changed_position, radiation_funcs.update_character_pos)
+
+
+-- Chest events
+local built_events = {
+    defines.events.on_built_entity,
+    defines.events.on_robot_built_entity,
+}
+local removal_events = {
+    defines.events.on_player_mined_entity,
+    defines.events.on_robot_mined_entity,
+    defines.events.on_entity_died,
+}
+
+
+script.on_event(built_events, chunk_func.chest_placed)
+script.on_event(removal_events, chunk_func.chest_removed)
