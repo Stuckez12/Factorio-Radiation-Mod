@@ -1,1 +1,8 @@
--- storage.scan_world = true
+-- game.print("------------------------ Stuckez12 Radiation Version 0.12.0 Announcement ------------------------")
+-- game.print(" ")
+-- game.print("Version 0.12.# brings a new feature to radiation where chests now have long distance reach.")
+-- game.print("However this feature will not be applied to pre existing chests due to UPS limitations.")
+-- game.print("This feature will work for any chest placed after the update and behave as expected.")
+-- game.print("So if you want your existing chests to be registed with the new feature they will have to be replaced.")
+-- game.print(" ")
+-- game.print("I (Stuckez12) apologise for this inconvenience.")

@@ -1,3 +1,8 @@
+Version: 0.11.6
+Date: 28-09-2025
+    Bugfixes:
+        - Fixed crash when loading into any save
+---------------------------------------------------------------------------------------------------
 Version: 0.11.5
 Date: 27-09-2025
     Bugfixes:

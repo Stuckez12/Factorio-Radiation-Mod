@@ -28,7 +28,7 @@ function gui_overlay.update_sprite_overlay(player, damage)
     local screen_flow = player.gui.screen
 
     if not screen_flow.radiation_logo then
-        create_radiation_display(player)
+        gui_overlay.create_radiation_display(player)
     end
 
     local sprite = screen_flow.radiation_logo
