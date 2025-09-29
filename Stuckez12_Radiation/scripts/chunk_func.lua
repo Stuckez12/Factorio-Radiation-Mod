@@ -57,7 +57,7 @@ function chunk_func.update_chunk_data(surface, xpos, ypos)
 
     chunk.damage = damage
     chunk.effect_dist = math.min(math.floor(damage / (50 * damage_reduction)), chunk_radius)
-    chunk.last_updated = game.tick
+    chunk.last_updated = 0
 end
 
 
@@ -107,7 +107,7 @@ function chunk_func.update_concurrent_damage(character)
 
     if pos.x == char_data.chunk.x and pos.y == char_data.chunk.y then return end
 
-    local time_12m = 60 * 60
+    local time_12m = 0 -- 60 * 60 * 12
     local concurrent_damage = 0
     local diameter = (chunk_radius * 2) + 1
 
