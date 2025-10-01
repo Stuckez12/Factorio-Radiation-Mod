@@ -19,6 +19,7 @@ storage.chunk_update_limit = storage.chunk_update_limit or {
     max = 12,
     current = 0
 }
+storage.residual_records = storage.residual_records or {}
 
 
 -- Mod Config
@@ -59,3 +60,20 @@ local removal_events = {
 
 script.on_event(built_events, chunk_func.chest_placed)
 script.on_event(removal_events, chunk_func.chest_removed)
+
+
+-- Residual Spawining Event
+script.on_event(defines.events.on_script_trigger_effect, function(event)
+    if event.effect_id == "on-atomic-detonation" then
+        local surface = event.target_entity and event.target_entity.surface or game.surfaces[1]
+        local pos = event.target_position
+
+        local residual_radiation = surface.create_entity{
+            name = "residual-radiation",
+            position = event.cause_entity.position,
+            force = "player"
+        }
+
+        radiation_funcs.add_atomic_radiation(residual_radiation)
+    end
+end)

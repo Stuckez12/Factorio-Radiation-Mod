@@ -36,7 +36,7 @@ local belt_types = {
 }
 local damage_reduction = 15
 local wall_resistance = 200
-
+local atomic_residual_radiation = 5000
 
 -- Settings variables
 local mod_name = "Stuckez12-Radiation-"
@@ -404,7 +404,8 @@ function calculate_damage(player)
         "ammo-turret",
         "corpse",
         "pipe",
-        "storage-tank"
+        "storage-tank",
+        "simple-entity"
     }
     local unit_types = {
         -- Biters
@@ -433,6 +434,15 @@ function calculate_damage(player)
             calculated_damage = ore_patch_damage(player, entity)
 
             damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
+
+        elseif entity.type == "simple-entity" then
+            exists = radiation_funcs.update_atomic_radiation(entity)
+
+            if exists then
+                local dist_percent = calculate_distance_percent(player, entity)
+
+                damage = damage + (atomic_residual_radiation * dist_percent)
+            end
 
         elseif entity.type == "item-entity" then
             if entity.valid and entity.stack and entity.stack.valid_for_read then
@@ -489,6 +499,8 @@ function calculate_damage(player)
                 end
             end
         end
+
+        ::continue::
     end
 
     damage = damage + enemy_radiation_damage(player, unit_types)
@@ -538,7 +550,7 @@ function radiation_funcs.player_radiation_damage(event)
         -- Prevent immediate spawn kill by radiation
         -- by dedicating the world center as radiation free
         if not storage.sim_char then -- Skip when in simulation
-            -- damage = prevent_spawn_death(character, damage)
+            damage = prevent_spawn_death(character, damage)
         end
 
         if damage == 0 then goto continue end
@@ -583,8 +595,7 @@ function add_character(character, player)
         chunk = {
             x = math.floor(player.position.x / 32),
             y = math.floor(player.position.y / 32)
-        },
-        radiated_chunks = {}
+        }
     }
 end
 
@@ -677,6 +688,36 @@ function radiation_funcs.update_gui_logo()
 
         gui_overlay.update_sprite_overlay(player, damage)
     end
+end
+
+
+function radiation_funcs.add_atomic_radiation(entity)
+    storage.residual_records = storage.residual_records or {}
+
+    local table_key = tostring(entity.position.x) .. "|" .. tostring(entity.position.y)
+
+    storage.residual_records[table_key] = game.tick + (60 ^ 3)  -- sticks around for an hour
+end
+
+
+function radiation_funcs.update_atomic_radiation(entity)
+    storage.residual_records = storage.residual_records or {}
+
+    local table_key = tostring(entity.position.x) .. "|" .. tostring(entity.position.y)
+
+    expiry = storage.residual_records[table_key]
+
+    if expiry then
+        if game.tick > expiry then
+            storage.residual_records[table_key] = nil
+
+            entity.destroy()
+
+            return false
+        end
+    else radiation_funcs.add_atomic_radiation(entity) end
+    
+    return true
 end
 
 

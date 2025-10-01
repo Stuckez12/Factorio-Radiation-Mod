@@ -7,7 +7,9 @@ require("prototypes.equipment.radiation_reduction_mk2")
 require("prototypes.equipment.radiation_reduction_mk3")
 
 require("prototypes.equipment.radiation_suit")
+
 require("prototypes.entities.radiation_wall")
+require("prototypes.entities.residual_radiation")
 
 -- Tech Research To Unlock Equipment
 data:extend({

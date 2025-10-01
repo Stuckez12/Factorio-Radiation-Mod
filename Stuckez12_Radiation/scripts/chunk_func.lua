@@ -103,7 +103,7 @@ function chunk_func.update_concurrent_damage(character)
     }
     local surface = character.surface.index
 
-    if not char_data.chunk then char_data.chunk = pos end
+    if not char_data.chunk then char_data.chunk = pos; char_data.concurrent_damage = 0 end
 
     local chunk_radius = settings.global[mod_name .. "Chunk-Effect-Radius"].value
 
