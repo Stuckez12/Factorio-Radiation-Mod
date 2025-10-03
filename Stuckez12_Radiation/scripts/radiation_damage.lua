@@ -435,7 +435,7 @@ function calculate_damage(player)
 
             damage = damage + radiation_wall_block(player, entity, wall_grid, wall_found, calculated_damage)
 
-        elseif entity.type == "simple-entity" then
+        elseif entity.type == "simple-entity" and entity.name == "residual-radiation" then
             exists = radiation_funcs.update_atomic_radiation(entity)
 
             if exists then
@@ -520,11 +520,7 @@ function radiation_funcs.player_radiation_damage(event)
         player_management.add_all_player_references()
     end
 
-    storage.chunk_update_limit = storage.chunk_update_limit or {
-        max = 12,
-        current = 0
-    }
-    storage.chunk_update_limit.current = 0
+
 
     for _, character in pairs(storage.active_characters) do
         local saved_damage = 0
@@ -637,6 +633,7 @@ function radiation_funcs.relink_characters_to_players()
             end
         end
 
+---@diagnostic disable-next-line: need-check-nil
         player_list[remove_player] = nil
     end
 end

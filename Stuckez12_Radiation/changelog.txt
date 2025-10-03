@@ -1,3 +1,9 @@
+Version: 0.12.3
+Date: 03-10-2025
+    Bugfixes:
+        - Fixed chests not being removed properly from internal mod memory
+        - Removed code that further restricted when trying to update chunk concurrent damage
+---------------------------------------------------------------------------------------------------
 Version: 0.12.2
 Date: 01-10-2025
     Additions:

@@ -13,8 +13,7 @@ function chunk_func.add_chunk_data(surface, xpos, ypos, chest_data)
     local data = {
         chest = chest_data,
         damage = 0,
-        effect_dist = 0,
-        last_updated = game.tick
+        effect_dist = 0
     }
 
     data = chunk_func.calc_chunk_damage(data)
@@ -57,7 +56,6 @@ function chunk_func.update_chunk_data(surface, xpos, ypos)
 
     chunk.damage = damage
     chunk.effect_dist = math.min(math.floor(damage / (50 * damage_reduction)), chunk_radius)
-    chunk.last_updated = 0
 end
 
 
@@ -109,7 +107,6 @@ function chunk_func.update_concurrent_damage(character)
 
     if pos.x == char_data.chunk.x and pos.y == char_data.chunk.y then return end
 
-    local time_12m = 0 -- 60 * 60 * 12
     local concurrent_damage = 0
     local diameter = (chunk_radius * 2) + 1
 
@@ -127,11 +124,6 @@ function chunk_func.update_concurrent_damage(character)
 
             local chests = chunk.chest or {}
             local damage = 0
-
-            if chunk.last_updated + time_12m >= game.tick then goto calc_damage end
-            if storage.chunk_update_limit.current >= storage.chunk_update_limit.max then goto calc_damage end
-
-            storage.chunk_update_limit.current = storage.chunk_update_limit.current + 1
 
             for _, chest in pairs(chests) do
                 if not chest.valid then goto invalid end
@@ -155,11 +147,8 @@ function chunk_func.update_concurrent_damage(character)
                 ::invalid::
             end
 
-            chunk.last_updated = game.tick
             chunk.damage = damage
             chunk.effect_dist = math.min(math.floor(damage / 50), chunk_radius)
-
-            ::calc_damage::
 
             local dx = math.abs(pos.x - x)
             local dy = math.abs(pos.y - y)
@@ -202,7 +191,6 @@ function chunk_func.add_chest(surface, xpos, ypos, chest)
     storage.chunk_data[surface][xpos] = storage.chunk_data[surface][xpos] or {}
     if not storage.chunk_data[surface][xpos][ypos] then 
         chunk_func.add_chunk_data(surface, xpos, ypos, {chest})
-    
     end
 
     local chunk = storage.chunk_data[surface][xpos][ypos]
@@ -230,11 +218,15 @@ function remove_chest(surface, xpos, ypos, chest)
 
     chunk.chest[chest.unit_number] = nil
 
-    for i, entity in pairs(chunk.chest) do
-        if not entity.valid then
-            table.remove(chunk.chest, i)
+    local new_chest_list = {}
+
+    for _, entity in pairs(chunk.chest) do
+        if entity.valid then
+            table.insert(new_chest_list, entity)
         end
     end
+
+    chunk.chest = new_chest_list
 
     if not next(chunk.chest) then
         chunk_func.delete_chunk_data(surface, xpos, ypos)

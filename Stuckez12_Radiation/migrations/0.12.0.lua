@@ -11,9 +11,3 @@ game.print("However use at your own risk if your save file is large/megabase siz
 game.print("Once executed your game will freeze as it adds all chests to memory.")
 game.print("|")
 game.print("I (Stuckez12) apologise for this inconvenience.")
-
-
-storage.chunk_update_limit = {
-    max = 12,
-    current = 0
-}

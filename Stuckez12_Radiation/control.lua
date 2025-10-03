@@ -15,10 +15,6 @@ storage.radiation_fluids = storage.radiation_fluids or {}
 storage.integrated_mods = storage.integrated_mods or {}
 storage.chunk_data = storage.chunk_data or {}
 storage.biters = storage.biters or {}
-storage.chunk_update_limit = storage.chunk_update_limit or {
-    max = 12,
-    current = 0
-}
 storage.residual_records = storage.residual_records or {}
 
 
@@ -66,7 +62,6 @@ script.on_event(removal_events, chunk_func.chest_removed)
 script.on_event(defines.events.on_script_trigger_effect, function(event)
     if event.effect_id == "on-atomic-detonation" then
         local surface = event.target_entity and event.target_entity.surface or game.surfaces[1]
-        local pos = event.target_position
 
         local residual_radiation = surface.create_entity{
             name = "residual-radiation",
@@ -76,4 +71,21 @@ script.on_event(defines.events.on_script_trigger_effect, function(event)
 
         radiation_funcs.add_atomic_radiation(residual_radiation)
     end
+end)
+
+
+script.on_nth_tick(1, function(event)
+    local player = game.players[1]
+
+    rendering.draw_text{
+        text = "X:" .. tostring(math.floor(player.position.x/32)) .. 
+            " | Y:" .. tostring(math.floor(player.position.y/32)),
+        surface = player.surface,
+        target = player.character,
+        target_offset = {0, -1},
+        color = {r=1, g=1, b=1},
+        scale = 1,
+        forces = {player.force},
+        time_to_live = 60  -- lasts ~1 second (60 ticks); increase for longer
+    }
 end)
