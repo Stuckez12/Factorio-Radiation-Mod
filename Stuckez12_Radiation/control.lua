@@ -72,20 +72,3 @@ script.on_event(defines.events.on_script_trigger_effect, function(event)
         radiation_funcs.add_atomic_radiation(residual_radiation)
     end
 end)
-
-
-script.on_nth_tick(1, function(event)
-    local player = game.players[1]
-
-    rendering.draw_text{
-        text = "X:" .. tostring(math.floor(player.position.x/32)) .. 
-            " | Y:" .. tostring(math.floor(player.position.y/32)),
-        surface = player.surface,
-        target = player.character,
-        target_offset = {0, -1},
-        color = {r=1, g=1, b=1},
-        scale = 1,
-        forces = {player.force},
-        time_to_live = 60  -- lasts ~1 second (60 ticks); increase for longer
-    }
-end)

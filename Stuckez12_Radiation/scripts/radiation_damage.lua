@@ -416,6 +416,11 @@ function calculate_damage(player)
         "big-spitter",
         "behemoth-spitter"
     }
+
+    if not settings.global[mod_name .. "Enable-Chunk-Range-Radiation"].value then
+        table.insert(entity_types, "logistic-container")
+        table.insert(entity_types, "container")
+    end
  
     local entities = area_fetch_entities(player, entity_types)
     local wall_grid, wall_found = get_wall_grid(player)
@@ -472,7 +477,7 @@ function calculate_damage(player)
                 end
             end
 
-        elseif entity.type == "corpse" then
+        elseif entity.type == "corpse" and settings.global[mod_name .. "Enable-Biter-Radiation"].value then
             local corpse_type = storage.biters[string.gsub(entity.name, "-corpse", "")]
 
             if corpse_type then
@@ -499,19 +504,18 @@ function calculate_damage(player)
                 end
             end
         end
-
-        ::continue::
     end
 
-    damage = damage + enemy_radiation_damage(player, unit_types)
+    if settings.global[mod_name .. "Enable-Biter-Radiation"].value then
+        damage = damage + enemy_radiation_damage(player, unit_types)
+    end
 
     return damage + player_inventory_damage(player)
 end
 
 
-function radiation_funcs.player_radiation_damage(event)
+function radiation_funcs.player_radiation_damage()
     local damage = 0
-    local player = nil
 
     storage.active_characters = storage.active_characters or {}
 
@@ -519,8 +523,6 @@ function radiation_funcs.player_radiation_damage(event)
     if next(storage.active_characters) == nil then
         player_management.add_all_player_references()
     end
-
-
 
     for _, character in pairs(storage.active_characters) do
         local saved_damage = 0
@@ -533,7 +535,7 @@ function radiation_funcs.player_radiation_damage(event)
         damage = calculate_damage(character)
 
         -- New container damage logic (chunk distance)
-        if storage.player_connections and storage.player_connections[character] then
+        if storage.player_connections and storage.player_connections[character] and settings.global[mod_name .. "Enable-Chunk-Range-Radiation"].value then
             chunk_func.update_concurrent_damage(character)
 
             damage = damage + storage.player_connections[character].concurrent_damage
