@@ -1,3 +1,8 @@
+Version: 0.12.5
+Date: 05-10-2025
+    Bugfixes:
+        - Fixed slight freezes that occur when moving between chunks (when chunk radiation is enabled)
+---------------------------------------------------------------------------------------------------
 Version: 0.12.4
 Date: 04-10-2025
     Additions:

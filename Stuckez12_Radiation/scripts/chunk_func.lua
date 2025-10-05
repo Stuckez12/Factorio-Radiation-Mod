@@ -13,7 +13,8 @@ function chunk_func.add_chunk_data(surface, xpos, ypos, chest_data)
     local data = {
         chest = chest_data,
         damage = 0,
-        effect_dist = 0
+        effect_dist = 0,
+        last_updated = 0
     }
 
     data = chunk_func.calc_chunk_damage(data)
@@ -109,6 +110,7 @@ function chunk_func.update_concurrent_damage(character)
 
     local concurrent_damage = 0
     local diameter = (chunk_radius * 2) + 1
+    local time_ext = 60 * 60
 
     storage.chunk_data = storage.chunk_data or {}
 
@@ -124,6 +126,12 @@ function chunk_func.update_concurrent_damage(character)
 
             local chests = chunk.chest or {}
             local damage = 0
+
+            chunk.last_updated = chunk.last_updated or 0
+
+            if chunk.last_updated <= game.tick then
+                goto continue
+            end
 
             for _, chest in pairs(chests) do
                 if not chest.valid then goto invalid end
@@ -149,6 +157,7 @@ function chunk_func.update_concurrent_damage(character)
 
             chunk.damage = damage
             chunk.effect_dist = math.min(math.floor(damage / 50), chunk_radius)
+            chunk.last_updated = game.tick + time_ext + (20 * math.random(10))
 
             local dx = math.abs(pos.x - x)
             local dy = math.abs(pos.y - y)
