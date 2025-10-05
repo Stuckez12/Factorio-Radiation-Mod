@@ -129,8 +129,8 @@ function chunk_func.update_concurrent_damage(character)
 
             chunk.last_updated = chunk.last_updated or 0
 
-            if chunk.last_updated <= game.tick then
-                goto continue
+            if chunk.last_updated >= game.tick then
+                goto skip_re_calc
             end
 
             for _, chest in pairs(chests) do
@@ -159,6 +159,8 @@ function chunk_func.update_concurrent_damage(character)
             chunk.effect_dist = math.min(math.floor(damage / 50), chunk_radius)
             chunk.last_updated = game.tick + time_ext + (20 * math.random(10))
 
+            ::skip_re_calc::
+
             local dx = math.abs(pos.x - x)
             local dy = math.abs(pos.y - y)
             local chunk_dist = math.max(dx, dy)
@@ -169,7 +171,7 @@ function chunk_func.update_concurrent_damage(character)
 
             local dist_percent = math.max(1 - percent, 0)
 
-            local character_damage = math.max(damage * (dist_percent^2.75), 0)
+            local character_damage = math.max(chunk.damage * (dist_percent^2.75), 0)
 
             concurrent_damage = concurrent_damage + character_damage
 
