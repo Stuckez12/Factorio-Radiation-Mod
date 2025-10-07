@@ -37,10 +37,17 @@ local belt_types = {
 local damage_reduction = 15
 local wall_resistance = 200
 local atomic_residual_radiation = 5000
+local achievement_thresholds = {
+    [0.1]="resist-spicy-food",
+    [50]="gamma-or-gammon",
+    [500]="i-am-invincible",
+    [2000]="god-of-radiation"
+}
 
 -- Settings variables
 local mod_name = "Stuckez12-Radiation-"
 local playing_sound = 0
+local wall_resisted = 0
 
 
 -- Mod functions
@@ -192,6 +199,8 @@ function radiation_wall_block(player, entity, wall_grid, wall_found, damage)
     local y_pos = (math.floor(entity.position.y) - start_y) + 1
 
     local wall_count = bresenham_wall_grid_count(wall_grid, x_pos, y_pos, player_pos, player_pos)
+
+    wall_resisted = wall_resisted + wall_count * wall_resistance * damage_reduction
 
     return math.max(damage - (wall_count * wall_resistance * damage_reduction), 0)
 end
@@ -526,6 +535,11 @@ function radiation_funcs.player_radiation_damage()
 
     for _, character in pairs(storage.active_characters) do
         local saved_damage = 0
+        local player = nil
+        local resisted_damage = 0
+        wall_resisted = 0
+
+        player = get_player(character)
 
         if not (character.valid and character.surface) then
             player_management.remove_character_reference(character)
@@ -570,9 +584,53 @@ function radiation_funcs.player_radiation_damage()
         -- Equipment resistances
         damage = damage_resistances(character, damage)
 
-        character.damage(damage, game.forces.enemy, "Stuckez12-radiation")
+        resisted_damage = saved_damage - damage
+
+        if saved_damage >= 100 and damage <= 0 then
+            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-cant-touch-me")
+            game.print("Can't Touch Me Granted")
+        end
+
+        prior_health = character.health
+        max_health = character.max_health
+
+        -- character.damage(damage, game.forces.enemy, "Stuckez12-radiation")
+
+        if damage > 0 then
+            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-that-tickles")
+        elseif wall_resisted >= 200 then
+            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-outsourced-resistance")
+        end
 
         ::continue::
+
+        if wall_resisted >= 200 and damage == 0 and resisted_damage == 0 then
+            local armor_inventory = character.get_inventory(defines.inventory.character_armor)
+
+            game.print("Checking Armor")
+
+            if armor_inventory and armor_inventory[1] and armor_inventory[1].valid_for_read then
+                if armor_inventory[1].name ~= "radiation-suit" then
+                    radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-naked-outsource")
+                end
+            else
+                radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-naked-outsource")
+            end
+        end
+
+        if not character.valid then
+            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-too-much-spice")
+
+            if prior_health == max_health then
+                radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-never-stood-a-chance")
+            end
+        end
+
+        for limit, achievement in pairs(achievement_thresholds) do
+            if resisted_damage >= limit then
+                radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-" .. achievement)
+            end
+        end
 
         if not storage.sim_char then -- Skip when in simulation
             update_damage_records(character, saved_damage)
@@ -717,6 +775,22 @@ function radiation_funcs.update_atomic_radiation(entity)
     else radiation_funcs.add_atomic_radiation(entity) end
     
     return true
+end
+
+
+function radiation_funcs.trigger_achievement(player, achievement)
+    if player and player.valid then
+        player.unlock_achievement(achievement)
+    end
+end
+
+
+function get_player(character)
+    if not storage.player_connections[character] then
+        radiation_funcs.link_character(character)
+    end
+
+    return storage.player_connections[character]
 end
 
 

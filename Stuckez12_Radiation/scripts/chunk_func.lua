@@ -73,7 +73,7 @@ function chunk_func.calc_chunk_damage(chunk_data)
     local damage = 0
 
     for chest in chunk_data.chests do
-        local inv = entity.get_inventory(define)
+        local inv = chest.get_inventory(define)
 
         for item, value in pairs(storage.radiation_items) do
             local count = inv.get_item_count(item)

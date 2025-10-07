@@ -11,5 +11,5 @@ require("prototypes.equipment.radiation_suit")
 require("prototypes.entities.radiation_wall")
 require("prototypes.entities.residual_radiation")
 
--- require("prototypes.achievements")
+require("prototypes.achievements")
 require("prototypes.technology")
