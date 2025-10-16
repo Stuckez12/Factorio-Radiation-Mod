@@ -2,6 +2,14 @@ local mod_name = "Stuckez12-Radiation-"
 
 data:extend({
     {
+        type = "bool-setting",
+        name = mod_name .. "Menu-Simulations",
+        setting_type = "startup",
+        default_value = true,
+        order = "a",
+        localised_description = {"mod-setting-description." .. mod_name .. "Menu-Simulations"}
+    },
+    {
         type = "int-setting",
         name = mod_name .. "Radiation-Radius",
         setting_type = "runtime-global",

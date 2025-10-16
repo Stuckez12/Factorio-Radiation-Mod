@@ -100,11 +100,24 @@ function damage_resistances(player, damage)
 end
 
 
-function play_sound(sound_name, volume)
-    game.play_sound{
-        path = sound_name,
-        volume_modifier = volume
-    }
+function play_sound(sound_name, volume, character)
+    if storage.sim_char then
+        game.play_sound{
+            path = sound_name,
+            volume_modifier = volume
+        }
+
+        return
+    end
+
+    if storage.player_connections and storage.player_connections[character] then
+        local player = storage.player_connections[character].player
+
+        player.play_sound{
+            path = sound_name,
+            volume_modifier = volume
+        }
+    end
 end
 
 
@@ -539,7 +552,12 @@ function radiation_funcs.player_radiation_damage()
         local resisted_damage = 0
         wall_resisted = 0
 
-        player = get_player(character)
+        p = get_player(character)
+        player = {}
+
+        if not storage.sim_char then
+            player = p.player
+        end
 
         if not (character.valid and character.surface) then
             player_management.remove_character_reference(character)
@@ -571,11 +589,11 @@ function radiation_funcs.player_radiation_damage()
 
         if playing_sound == 1 then
             if damage <= 50 and damage ~= 0 then
-                play_sound("LowRadiation", 0.2)
+                play_sound("LowRadiation", 0.2, character)
             elseif damage <= 250 then
-                play_sound("MediumRadiation", 0.6)
+                play_sound("MediumRadiation", 0.6, character)
             elseif damage > 250 then
-                play_sound("HighRadiation", 1)
+                play_sound("HighRadiation", 1, character)
             end
         end
 
@@ -587,48 +605,45 @@ function radiation_funcs.player_radiation_damage()
         resisted_damage = saved_damage - damage
 
         if saved_damage >= 100 and damage <= 0 then
-            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-cant-touch-me")
-            game.print("Can't Touch Me Granted")
+            radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-cant-touch-me")
         end
 
         prior_health = character.health
         max_health = character.max_health
 
-        -- character.damage(damage, game.forces.enemy, "Stuckez12-radiation")
+        character.damage(damage, game.forces.enemy, "Stuckez12-radiation")
 
-        if damage > 0 then
-            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-that-tickles")
+        if damage > 0 and not storage.sim_char then
+            radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-that-tickles")
         elseif wall_resisted >= 200 then
-            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-outsourced-resistance")
+            radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-outsourced-resistance")
         end
 
         ::continue::
 
-        if wall_resisted >= 200 and damage == 0 and resisted_damage == 0 then
+        if wall_resisted >= 200 and damage == 0 and resisted_damage == 0 and not storage.sim_char then
             local armor_inventory = character.get_inventory(defines.inventory.character_armor)
-
-            game.print("Checking Armor")
 
             if armor_inventory and armor_inventory[1] and armor_inventory[1].valid_for_read then
                 if armor_inventory[1].name ~= "radiation-suit" then
-                    radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-naked-outsource")
+                    radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-naked-outsource")
                 end
             else
-                radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-naked-outsource")
+                radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-naked-outsource")
             end
         end
 
         if not character.valid then
-            radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-too-much-spice")
+            radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-too-much-spice")
 
             if prior_health == max_health then
-                radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-never-stood-a-chance")
+                radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-never-stood-a-chance")
             end
         end
 
         for limit, achievement in pairs(achievement_thresholds) do
             if resisted_damage >= limit then
-                radiation_funcs.trigger_achievement(player.player, "Stuckez12-Radiation-achievement-" .. achievement)
+                radiation_funcs.trigger_achievement(player, "Stuckez12-Radiation-achievement-" .. achievement)
             end
         end
 
@@ -779,7 +794,7 @@ end
 
 
 function radiation_funcs.trigger_achievement(player, achievement)
-    if player and player.valid then
+    if player and player.valid and not storage.sim_char then
         player.unlock_achievement(achievement)
     end
 end

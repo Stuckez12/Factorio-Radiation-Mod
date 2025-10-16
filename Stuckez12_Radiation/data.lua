@@ -1,6 +1,8 @@
 require("prototypes.include_prototypes")
 require("prototypes.simulations.tips_n_tricks")
 
+local menu_simulations = require("menu-simulations.menu_simulations")
+
 local sounds = {
     {
         name = "LowRadiation",
@@ -44,10 +46,6 @@ data:extend({
         name = "Stuckez12-radiation"
     }
 })
-
-
-
-
 
 local gui_logo = {
     {
@@ -95,3 +93,16 @@ data:extend({
         height = 32
     }
 })
+
+if settings.startup["my_mod-enable-main-menu-sims"].value then
+    local main_menu_simulations = data.raw["utility-constants"]["default"].main_menu_simulations
+    main_menu_simulations.Stuckez12_Radiation_train_sim = menu_simulations.train_sim
+    main_menu_simulations.Stuckez12_Radiation_edge_patch = menu_simulations.edge_patch
+    main_menu_simulations.Stuckez12_Radiation_patch_dies = menu_simulations.patch_dies
+    main_menu_simulations.Stuckez12_Radiation_mining_patch = menu_simulations.mining_patch
+    main_menu_simulations.Stuckez12_Radiation_rad_factory = menu_simulations.rad_factory
+    main_menu_simulations.Stuckez12_Radiation_biter_breach = menu_simulations.biter_breach
+    main_menu_simulations.Stuckez12_Radiation_rad_nuke = menu_simulations.rad_nuke
+    main_menu_simulations.Stuckez12_Radiation_rad_corpse = menu_simulations.rad_corpse
+    main_menu_simulations.Stuckez12_Radiation_rad_spider = menu_simulations.rad_spider
+end
