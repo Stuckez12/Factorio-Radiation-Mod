@@ -15,6 +15,7 @@ storage.radiation_fluids = storage.radiation_fluids or {}
 storage.integrated_mods = storage.integrated_mods or {}
 storage.chunk_data = storage.chunk_data or {}
 storage.biters = storage.biters or {}
+storage.chunk_que = storage.chunk_que or {}
 storage.residual_records = storage.residual_records or {}
 
 
@@ -25,7 +26,10 @@ script.on_configuration_changed(mod_addons.integrate_mods)
 
 -- Interval damage event
 script.on_nth_tick(20, radiation_funcs.player_radiation_damage)
-script.on_nth_tick(4, radiation_funcs.update_gui_logo)
+script.on_nth_tick(4, function()
+    radiation_funcs.update_gui_logo()
+    chunk_func.update_chunks_in_que()
+end)
 
 
 -- Events when a player character is created

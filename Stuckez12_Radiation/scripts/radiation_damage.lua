@@ -555,7 +555,7 @@ function radiation_funcs.player_radiation_damage()
         p = get_player(character)
         player = {}
 
-        if not storage.sim_char then
+        if not storage.sim_char and p then
             player = p.player
         end
 
@@ -801,6 +801,7 @@ end
 
 
 function get_player(character)
+    storage.player_connections = storage.player_connections or {}
     if not storage.player_connections[character] then
         radiation_funcs.link_character(character)
     end

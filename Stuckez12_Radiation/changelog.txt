@@ -6,9 +6,12 @@ Date: 05-10-2025
         - 14 new achievements related to radiation
         - 9 menu simulations showing off the radiation mechanic
     Changes:
-        - 
+        - Chunk Radius Setting max value increased from 16 to 48
+        - Revamp to updating chunk radiation damage values (causing change above >:] )
     Bugfixes:
         - Sound is now played per player instead of globally
+    Locale:
+        - Updated English locale
 ---------------------------------------------------------------------------------------------------
 Version: 0.12.5
 Date: 05-10-2025

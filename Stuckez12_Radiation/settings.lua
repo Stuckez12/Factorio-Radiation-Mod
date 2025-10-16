@@ -42,7 +42,7 @@ data:extend({
         name = mod_name .. "Enable-Biter-Radiation",
         setting_type = "runtime-global",
         default_value = true,
-        order = "e",
+        order = "f",
         localised_description = {"mod-setting-description." .. mod_name .. "Enable-Biter-Radiation"}
     },
     {
@@ -50,8 +50,18 @@ data:extend({
         name = mod_name .. "Enable-Chunk-Range-Radiation",
         setting_type = "runtime-global",
         default_value = true,
-        order = "d",
+        order = "e",
         localised_description = {"mod-setting-description." .. mod_name .. "Enable-Chunk-Range-Radiation"}
+    },
+    {
+        type = "int-setting",
+        name = mod_name .. "Chunks-Per-Call",
+        setting_type = "runtime-global",
+        default_value = 6,
+        minimum_value = 1,
+        maximum_value = 12,
+        order = "d",
+        localised_description = {"mod-setting-description." .. mod_name .. "Chunks-Per-Call"}
     },
     {
         type = "int-setting",
@@ -59,7 +69,7 @@ data:extend({
         setting_type = "runtime-global",
         default_value = 8,
         minimum_value = 4,
-        maximum_value = 16,
+        maximum_value = 48,
         order = "c",
         localised_description = {"mod-setting-description." .. mod_name .. "Chunk-Effect-Radius"}
     }

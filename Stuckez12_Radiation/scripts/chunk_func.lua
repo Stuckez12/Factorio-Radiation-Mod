@@ -26,6 +26,10 @@ end
 
 
 function chunk_func.update_chunk_data(surface, xpos, ypos)
+    if not storage.chunk_data[surface] then return end
+    if not storage.chunk_data[surface][xpos] then return end
+    if not storage.chunk_data[surface][xpos][ypos] then return end
+
     local chunk = storage.chunk_data[surface][xpos][ypos]
     local chests = chunk.chest
 
@@ -54,9 +58,11 @@ function chunk_func.update_chunk_data(surface, xpos, ypos)
     end
 
     local chunk_radius = settings.global[mod_name .. "Chunk-Effect-Radius"].value
+    local time_ext = 60 * 60 * 3
 
     chunk.damage = damage
     chunk.effect_dist = math.min(math.floor(damage / (50 * damage_reduction)), chunk_radius)
+    chunk.last_updated = game.tick + time_ext + (20 * math.random(10))
 end
 
 
@@ -110,7 +116,6 @@ function chunk_func.update_concurrent_damage(character)
 
     local concurrent_damage = 0
     local diameter = (chunk_radius * 2) + 1
-    local time_ext = 60 * 60
 
     storage.chunk_data = storage.chunk_data or {}
 
@@ -133,31 +138,33 @@ function chunk_func.update_concurrent_damage(character)
                 goto skip_re_calc
             end
 
-            for _, chest in pairs(chests) do
-                if not chest.valid then goto invalid end
+            chunk_func.add_chunk_to_que(surface, x, y)
 
-                local inv = chest.get_inventory(defines.inventory.chest)
+            -- for _, chest in pairs(chests) do
+            --     if not chest.valid then goto invalid end
 
-                for i = 1, #inv do
-                    local item = inv[i]
+            --     local inv = chest.get_inventory(defines.inventory.chest)
 
-                    if item and item.valid_for_read then
-                        local value = storage.radiation_items[item.name]
+            --     for i = 1, #inv do
+            --         local item = inv[i]
 
-                        if not value then goto skip_item end
+            --         if item and item.valid_for_read then
+            --             local value = storage.radiation_items[item.name]
 
-                        damage = damage + (item.count * value)
-                    end
+            --             if not value then goto skip_item end
 
-                    ::skip_item::
-                end
+            --             damage = damage + (item.count * value)
+            --         end
 
-                ::invalid::
-            end
+            --         ::skip_item::
+            --     end
 
-            chunk.damage = damage
-            chunk.effect_dist = math.min(math.floor(damage / 50), chunk_radius)
-            chunk.last_updated = game.tick + time_ext + (20 * math.random(10))
+            --     ::invalid::
+            -- end
+
+            -- chunk.damage = damage
+            -- chunk.effect_dist = math.min(math.floor(damage / 50), chunk_radius)
+            -- chunk.last_updated = game.tick + time_ext + (20 * math.random(10))
 
             ::skip_re_calc::
 
@@ -241,6 +248,34 @@ function remove_chest(surface, xpos, ypos, chest)
 
     if not next(chunk.chest) then
         chunk_func.delete_chunk_data(surface, xpos, ypos)
+    end
+end
+
+
+function chunk_func.add_chunk_to_que(surface, xpos, ypos)
+    storage.chunk_que = storage.chunk_que or {}
+
+    for _, chunk in ipairs(storage.chunk_que) do
+        if chunk.surface == surface and chunk.x == xpos and chunk.y == ypos then
+            return
+        end
+    end
+
+    table.insert(storage.chunk_que, {surface=surface, x=xpos, y=ypos})
+end
+
+
+function chunk_func.update_chunks_in_que()
+    storage.chunk_que = storage.chunk_que or {}
+
+    for i=1, settings.global[mod_name .. "Chunks-Per-Call"].value do
+        local chunk = storage.chunk_que[1]
+
+        if chunk == nil then return end
+
+        table.remove(storage.chunk_que, 1)
+
+        chunk_func.update_chunk_data(chunk.surface, chunk.x, chunk.y)
     end
 end
 

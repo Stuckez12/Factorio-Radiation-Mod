@@ -94,7 +94,7 @@ data:extend({
     }
 })
 
-if settings.startup["my_mod-enable-main-menu-sims"].value then
+if settings.startup["Stuckez12-Radiation-Menu-Simulations"].value then
     local main_menu_simulations = data.raw["utility-constants"]["default"].main_menu_simulations
     main_menu_simulations.Stuckez12_Radiation_train_sim = menu_simulations.train_sim
     main_menu_simulations.Stuckez12_Radiation_edge_patch = menu_simulations.edge_patch
