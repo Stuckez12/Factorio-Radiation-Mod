@@ -10,6 +10,7 @@ Date: 05-10-2025
         - Revamp to updating chunk radiation damage values (causing change above >:] )
     Bugfixes:
         - Sound is now played per player instead of globally
+        - Fixed infrequent crash when near radiation walls
     Locale:
         - Updated English locale
 ---------------------------------------------------------------------------------------------------

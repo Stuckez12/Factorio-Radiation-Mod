@@ -167,7 +167,13 @@ function bresenham_wall_grid_count(wall_grid, dest_x, dest_y, p_x, p_y)
         local err = math.floor(dx / 2)
 
         while x ~= p_x do
+            if wall_grid == nil then goto continue1 end
+            if wall_grid[x] == nil then goto continue1 end
+            if wall_grid[x][y] == nil then goto continue1 end
+
             if wall_grid[x][y] then wall_count = wall_count + 1 end
+
+            ::continue1::
 
             err = err - dy
 
@@ -182,7 +188,13 @@ function bresenham_wall_grid_count(wall_grid, dest_x, dest_y, p_x, p_y)
         local err = math.floor(dy / 2)
 
         while y ~= p_y do
+            if wall_grid == nil then goto continue2 end
+            if wall_grid[x] == nil then goto continue2 end
+            if wall_grid[x][y] == nil then goto continue2 end
+
             if wall_grid[x][y] then wall_count = wall_count + 1 end
+
+            ::continue2::
 
             err = err - dx
 
