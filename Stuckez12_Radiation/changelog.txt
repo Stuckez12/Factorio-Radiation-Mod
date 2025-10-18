@@ -1,5 +1,5 @@
 Version: 1.0.0
-Date: 05-10-2025
+Date: 18-10-2025
     Info:
         - Official release of the mod
     Additions:
