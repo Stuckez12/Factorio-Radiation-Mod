@@ -544,7 +544,15 @@ function calculate_damage(player)
         damage = damage + enemy_radiation_damage(player, unit_types)
     end
 
-    return damage + player_inventory_damage(player)
+    damage = damage + player_inventory_damage(player)
+
+    local damage_multiplier = 1
+
+    if not storage.sim_char then -- Skip when in simulation
+        damage_multiplier = settings.global[mod_name .. "Base-Radiation"].value
+    end
+
+    return damage * damage_multiplier
 end
 
 
@@ -608,6 +616,14 @@ function radiation_funcs.player_radiation_damage()
                 play_sound("HighRadiation", 1, character)
             end
         end
+
+        local damage_multiplier = 1
+
+        if not storage.sim_char then -- Skip when in simulation
+            damage_multiplier = settings.global[mod_name .. "Damage-Multiplier"].value
+        end
+
+        damage = damage * damage_multiplier
 
         saved_damage = damage
 
