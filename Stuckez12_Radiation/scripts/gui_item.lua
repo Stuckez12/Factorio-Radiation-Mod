@@ -5,26 +5,41 @@ local gui_item = {}
 script.on_event(defines.events.on_gui_click, function(event)
     if not event.element.valid then return end
 
+    local player = game.get_player(event.player_index)
+    if not player then return end
+
+    local gui = player.gui.screen.item_mod
+    if gui == nil then return end
+
+    local tables = gui.scroll_pane
+    local item_table = tables.item_table
+    local fluid_table = tables.fluid_table
+    local item_table_add = tables.item_table_add
+    local fluid_table_add = tables.fluid_table_add
+
+    local valid_button_clicked = false
+
     if event.element.name == "item_mod_close" then
-        local player = game.get_player(event.player_index)
-        if not player then return end
-
-        local frame = player.gui.screen.item_mod
-        if frame then
-            frame.destroy()
+        if gui then
+            gui.destroy()
+            return
         end
+
     elseif event.element.name == "apply_rad_changes" then
-        local player = game.get_player(event.player_index)
-        if not player then return end
-
-        local gui = player.gui.screen.item_mod
-        local tables = gui.scroll_pane
-        local item_table = tables.item_table
-        local fluid_table = tables.fluid_table
-
         storage.radiation_items = update_radiated_list(item_table, storage.radiation_items, true)
         storage.radiation_fluids = update_radiated_list(fluid_table, storage.radiation_fluids, true)
+        valid_button_clicked = true
 
+    elseif event.element.name == "item_add_item" then
+        storage.radiation_items = update_radiated_list(item_table_add, storage.radiation_items, false)
+        valid_button_clicked = true
+
+    elseif event.element.name == "item_add_fluid" then
+        storage.radiation_fluids = update_radiated_list(fluid_table_add, storage.radiation_fluids, false)
+        valid_button_clicked = true
+    end
+
+    if valid_button_clicked then
         close_gui(gui)
         gui_item.create_window(player)
     end
