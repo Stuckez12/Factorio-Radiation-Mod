@@ -248,8 +248,14 @@ function player_inventory_damage(player)
 
         if not inv then goto continue end
 
+        log("\n\n\nData")
+
         for item, value in pairs(storage.radiation_items) do
-            local count = inv.get_item_count(item)
+            local count
+
+            log("Item: " .. item .. " | Type: " .. type(item) .. " | Value: " .. value .. " | Type: " .. type(value))
+
+            count = inv.get_item_count(item)
 
             damage = damage + math.max(count * value, 0)
         end
@@ -546,13 +552,7 @@ function calculate_damage(player)
 
     damage = damage + player_inventory_damage(player)
 
-    local damage_multiplier = 1
-
-    if not storage.sim_char then -- Skip when in simulation
-        damage_multiplier = settings.global[mod_name .. "Base-Radiation"].value
-    end
-
-    return damage * damage_multiplier
+    return damage
 end
 
 
@@ -570,6 +570,8 @@ function radiation_funcs.player_radiation_damage()
         local saved_damage = 0
         local player = nil
         local resisted_damage = 0
+        local base_multiplier = 1
+        local damage_multiplier = 1
         wall_resisted = 0
 
         p = get_player(character)
@@ -592,6 +594,12 @@ function radiation_funcs.player_radiation_damage()
 
             damage = damage + storage.player_connections[character].concurrent_damage
         end
+
+        if not storage.sim_char then -- Skip when in simulation
+            base_multiplier = settings.global[mod_name .. "Base-Radiation"].value
+        end
+
+        damage = damage * base_multiplier
 
         if damage == 0 then goto continue end
 
@@ -616,8 +624,6 @@ function radiation_funcs.player_radiation_damage()
                 play_sound("HighRadiation", 1, character)
             end
         end
-
-        local damage_multiplier = 1
 
         if not storage.sim_char then -- Skip when in simulation
             damage_multiplier = settings.global[mod_name .. "Damage-Multiplier"].value
