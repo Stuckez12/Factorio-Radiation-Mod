@@ -80,7 +80,6 @@ commands.add_command("modify_items", "Creates GUI window to change individual it
         if player and player.valid and player.character.valid then
             item_window.create_window(player)
 
-            player.print("Stuckez12 Radiation: Player Character Removed From Radiation Calculations")
             log("Fluid/Item config GUI window created")
         end
     end

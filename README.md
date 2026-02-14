@@ -41,6 +41,8 @@ No worries - you can customize the behavior and reach of radiation to your heart
 Don’t like chests being able to kill you from the other side of the planet? You can reduce or disable chunk-based radiation at any time.
 Dislike the biters tickling you with their radiation. You can also disable their new evolution feature.
 
+In version 1.1.0, you can now also use /modify_items to fully customise each items radiation value. However the chunk radiation wont be updated immediately.
+
 # Can I add this to my current playthrough?
 Yes, you can add this to your current playthrough. The mod was designed as a standalone addition that can be dropped in anywhere.
 

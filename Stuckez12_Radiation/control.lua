@@ -25,7 +25,7 @@ script.on_configuration_changed(function(data)
     -- Check if any mods actually changed
     if not data.mod_changes or next(data.mod_changes) == nil then return end
 
-    game.print("Detected change in mod configuration. Defaulting radiated items/fluids")
+    game.print("Stuckez12 Radiation: Detected change in mod configuration. Defaulting radiated items/fluids")
 
     mod_addons.integrate_mods()
 end)

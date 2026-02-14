@@ -111,7 +111,8 @@ function gui_item.create_window(player)
         pane.add{
             type = "label",
             name = "item_heading_add",
-            caption = "Add Radiated Item"
+            caption = "Add Radiated Item",
+            style = "frame_title"
         }
 
         local add_item = pane.add{
@@ -137,7 +138,8 @@ function gui_item.create_window(player)
         pane.add{
             type = "label",
             name = "item_heading",
-            caption = "Radiated Items"
+            caption = "Radiated Items",
+            style = "frame_title"
         }
 
         local table_item = pane.add{
@@ -154,7 +156,8 @@ function gui_item.create_window(player)
         pane.add{
             type = "label",
             name = "fluid_heading_add",
-            caption = "Add Radiated Fluids"
+            caption = "Add Radiated Fluids",
+            style = "frame_title"
         }
 
         local add_fluid = pane.add{
@@ -180,7 +183,8 @@ function gui_item.create_window(player)
         pane.add{
             type = "label",
             name = "fluid_heading",
-            caption = "Radiated Fluids"
+            caption = "Radiated Fluids",
+            style = "frame_title"
         }
         local table_fluid = pane.add{
             type = "table",
