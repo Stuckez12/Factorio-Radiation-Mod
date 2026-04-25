@@ -17,6 +17,7 @@ storage.chunk_data = storage.chunk_data or {}
 storage.biters = storage.biters or {}
 storage.chunk_que = storage.chunk_que or {}
 storage.residual_records = storage.residual_records or {}
+storage.recorded_characters = storage.recorded_characters or {}
 
 
 -- Mod Config

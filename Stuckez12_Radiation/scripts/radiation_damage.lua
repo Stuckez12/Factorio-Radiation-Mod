@@ -248,12 +248,12 @@ function player_inventory_damage(player)
 
         if not inv then goto continue end
 
-        log("\n\n\nData")
+        -- log("\n\n\nData")
 
         for item, value in pairs(storage.radiation_items) do
             local count
 
-            log("Item: " .. item .. " | Type: " .. type(item) .. " | Value: " .. value .. " | Type: " .. type(value))
+            -- log("Item: " .. item .. " | Type: " .. type(item) .. " | Value: " .. value .. " | Type: " .. type(value))
 
             count = inv.get_item_count(item)
 
@@ -566,6 +566,8 @@ function radiation_funcs.player_radiation_damage()
         player_management.add_all_player_references()
     end
 
+    record_all_players();
+
     for _, character in pairs(storage.active_characters) do
         local saved_damage = 0
         local player = nil
@@ -841,6 +843,44 @@ function get_player(character)
     end
 
     return storage.player_connections[character]
+end
+
+
+function record_all_players()
+    storage.recorded_characters = storage.recorded_characters or {}
+
+    local accounted_characters = {}
+
+    log("-------------------------------------------------------------------------");
+    log("Starting recording all stuff");
+
+    for _, p in pairs(game.connected_players) do
+        log("Searching for player character");
+        if p.valid then
+            log("Valid player character");
+            local accounted_for = false;
+
+            for i, actual_player in pairs(storage.recorded_characters) do
+                log(i);
+                if actual_player.valid then
+                    if actual_player == p.character then
+                        accounted_for = true;
+                        log("Player Accounted for");
+                        break;
+                    end
+                end
+            end
+
+            if not accounted_for then
+                player_management.add_character_reference(p.character)
+                table.insert(storage.recorded_characters, p.character)
+            end
+
+            table.insert(accounted_characters, p.character)
+        end
+    end
+
+    storage.recorded_characters = accounted_characters
 end
 
 
